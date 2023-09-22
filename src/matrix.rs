@@ -1,4 +1,4 @@
-// pub type Matrix2 = [[f64; 2]; 2];
+pub type Matrix2 = [[f64; 2]; 2];
 // pub type Matrix3 = [[f64; 3]; 3];
 pub type Matrix = Vec<Vec<f64>>;
 
@@ -8,6 +8,8 @@ pub fn scalar_mult(m: &Matrix, s: f64) -> Matrix {
         .map(|x| x.iter().map(|y| y * s).collect())
         .collect();
 }
+
+
 
 pub fn add(m1: &Matrix, m2: &Matrix) -> Matrix {
     return m1

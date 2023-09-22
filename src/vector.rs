@@ -15,3 +15,7 @@ pub fn add(v1: &Vector, v2: &Vector) -> Vector {
 pub fn dot_product(v1: &Vector, v2: &Vector) -> f64 {
     return v1.iter().zip(v2.iter).map(|(x,y)| x*y ).sum()
 }
+
+pub fn cross_product(v1: &Vector, v2: &Vector) -> Vector {
+    
+}
