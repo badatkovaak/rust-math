@@ -11,3 +11,7 @@ pub fn scalar_mult(v: &Vector, s: f64) -> Vector {
 pub fn add(v1: &Vector, v2: &Vector) -> Vector {
     return v1.iter().zip(v2.iter()).map(|(x, y)| x + y).collect();
 }
+
+pub fn dot_product(v1: &Vector, v2: &Vector) -> f64 {
+    return v1.iter().zip(v2.iter).map(|(x,y)| x*y ).sum()
+}
