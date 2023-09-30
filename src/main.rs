@@ -1,4 +1,5 @@
 pub mod complex;
+// pub mod equations;
 pub mod matrix;
 pub mod utils;
 pub mod vector;

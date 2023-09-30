@@ -37,3 +37,8 @@ pub fn add(m1: &Matrix, m2: &Matrix) -> Matrix {
         .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
         .collect();
 }
+
+pub fn make_into_step_form(m: &mut Matrix) -> Matrix {
+    todo!()
+    // return *m;
+}
