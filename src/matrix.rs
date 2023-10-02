@@ -30,7 +30,7 @@ pub fn add2(m1: &Matrix2, m2: &Matrix2) -> Matrix2 {
         .unwrap();
 }
 
-pub fn add(m1: &Matrix, m2: &Matrix) -> Matrix {
+pub fn add(m1: Matrix, m2: Matrix) -> Matrix {
     return m1
         .iter()
         .zip(m2.iter())
@@ -42,3 +42,14 @@ pub fn make_into_step_form(m: &mut Matrix) -> Matrix {
     todo!()
     // return *m;
 }
+
+pub fn appendRow(m: Matrix, row: Vec<f64>) -> Matrix {
+    let mut r = row.clone();
+    let mut m2 = m.clone();
+    r.reverse();
+    for i in m2.iter(){
+        i.as_mut::<Vec<f64>>().push(r[0]);
+    }
+    return m;
+}
+
