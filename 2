@@ -35,10 +35,6 @@ impl Matrix {
         return self.0.iter_mut();
     }
 
-    pub fn to_vec(&mut self) -> Self {
-        return Self(self.0.to_vec());
-    }
-
     pub fn scalar_mult(self, s: f64) -> Matrix {
         return self
             .iter()
