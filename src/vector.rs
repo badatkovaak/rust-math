@@ -1,30 +1,77 @@
 // use mymath::utils;
 
-pub type Vector = Vec<f64>;
+use std::ops;
+use std::slice;
 
-pub fn scalar_mult(v: &Vector, s: f64) -> Vector {
-    let mut result: Vec<f64> = Vec::new();
-    for item in v.iter() {
-        result.push(item * s as f64);
+pub struct Vector(pub Vec<f64>);
+
+impl Iterator for Vector {
+    type Item = f64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.iter().next().cloned()
     }
-    return result;
 }
 
-pub fn get_length(v: &Vector) -> f64 {
-    return f64::sqrt(v.iter().map(|x| x * x).sum());
+impl Clone for Vector {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
 }
 
-pub fn add(v1: &Vector, v2: &Vector) -> Vector {
-    return v1.iter().zip(v2.iter()).map(|(x, y)| x + y).collect();
+impl FromIterator<f64> for Vector {
+    fn from_iter<T: IntoIterator<Item = f64>>(iter: T) -> Self {
+        Self(Vec::from_iter(iter))
+    }
 }
 
-pub fn dot_product(v1: &Vector, v2: &Vector) -> f64 {
-    return v1.iter().zip(v2.iter()).map(|(x, y)| x * y).sum();
+impl ops::Neg for Vector {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        self.scalar_mult(-1.0)
+    }
 }
 
-pub fn normalize(v: &Vector) -> Vector {
-    // return scalar_mult(v, 1. / get_length(v));
-    return scalar_mult(v, crate::utils::one_over_sqrt(get_length(v)));
+impl ops::Add for Vector {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        self.iter().zip(rhs.iter()).map(|(x, y)| x + y).collect()
+    }
+}
+
+impl ops::Mul for Vector {
+    type Output = f64;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.iter().zip(rhs.iter()).map(|(x, y)| x * y).sum()
+    }
+}
+
+impl Vector {
+    pub fn iter(self: &Self) -> slice::Iter<'_, f64> {
+        self.0.iter()
+    }
+
+    pub fn iter_mut(self: &mut Self) -> slice::IterMut<'_, f64> {
+        self.0.iter_mut()
+    }
+    pub fn scalar_mult(self: &Self, s: f64) -> Vector {
+        let mut result: Vec<f64> = Vec::new();
+        for item in self.iter() {
+            result.push(item * s as f64);
+        }
+        Vector(result)
+    }
+
+    pub fn get_length(self: &Self) -> f64 {
+        f64::sqrt(self.iter().map(|x| x * x).sum())
+    }
+
+    pub fn normalize(self: &Self) -> Vector {
+        Self::scalar_mult(self, crate::utils::one_over_sqrt(self.get_length()))
+    }
 }
 
 // pub fn cross_product(v1: &Vector, v2: &Vector) -> Vector {

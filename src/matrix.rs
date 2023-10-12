@@ -1,12 +1,8 @@
+use std::ops;
 use std::slice::{Iter, IterMut};
 
 #[derive(Debug)]
-pub struct Matrix(Vec<Vec<f64>>);
-// pub type Matrix2 = [[f64; 2]; 2];
-// pub type Matrix3 = [[f64; 3]; 3];
-// pub type Matrix = Vec<Vec<f64>>;
-// #[derive(Debug)]
-// pub struct Matrix(pub Vec<Vec<f64>>);
+pub struct Matrix(pub Vec<Vec<f64>>);
 
 impl Iterator for Matrix {
     type Item = Vec<f64>;
@@ -28,7 +24,7 @@ impl FromIterator<Vec<f64>> for Matrix {
     }
 }
 
-impl std::ops::Neg for Matrix {
+impl ops::Neg for Matrix {
     type Output = Matrix;
 
     fn neg(self) -> Self::Output {
@@ -36,28 +32,18 @@ impl std::ops::Neg for Matrix {
     }
 }
 
-impl std::ops::Add for Matrix {
+impl ops::Add for Matrix {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        // <<<<<<< Updated upstream
-        // return self::Matrix::myadd(self, rhs);
         self.iter()
             .zip(rhs.iter())
             .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
             .collect()
-        // =======
-        //         return self
-        //             .iter()
-        //             .zip(rhs.iter())
-        //             .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
-        //             .collect();
-        //         // return self::Matrix::myadd(self, rhs);
-        // >>>>>>> Stashed changes
     }
 }
 
-impl std::ops::Sub for Matrix {
+impl ops::Sub for Matrix {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -65,7 +51,7 @@ impl std::ops::Sub for Matrix {
     }
 }
 
-impl std::ops::Mul for Matrix {
+impl ops::Mul for Matrix {
     type Output = Option<Self>;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -84,12 +70,6 @@ impl std::ops::Mul for Matrix {
     }
 }
 
-// impl std::ops::Div for Matrix {
-//     type Output = Option<Self>;
-//
-//     fn div(self, rhs: Self) -> Self::Output {}
-// }
-
 impl Matrix {
     pub fn iter(&self) -> Iter<'_, Vec<f64>> {
         self.0.iter()
@@ -99,7 +79,7 @@ impl Matrix {
         self.0.iter_mut()
     }
 
-    pub fn to_vec(&mut self) -> Self {
+    pub fn to_vec(&mut self) -> Matrix {
         Self(self.0.to_vec())
     }
 
@@ -108,13 +88,6 @@ impl Matrix {
             .map(|x| x.iter().map(|y| y * s).collect())
             .collect()
     }
-
-    // pub fn myadd(self, m2: Matrix) -> Matrix {
-    //     return self
-    //         .iter()
-    //         .zip(m2.iter())
-    //         .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
-    //         .collect();
 
     pub fn transpose(mut self) -> Matrix {
         for i in 0..self.0.len() {
@@ -125,21 +98,82 @@ impl Matrix {
         return self;
     }
 
+    pub fn get_dimensions(&self) -> (usize, usize) {
+        (self.0.len(), self.0[0].len())
+    }
+
+    pub fn elem_transform_1(self, i: u32, j: u32) -> Matrix {
+        let cond = |k, l| {
+            let c1 = k == l && k != j && k != i;
+            let c2 = k == i && l == j;
+            let c3 = k == j && l == i;
+            (c1 || c2 || c3) as u32
+        };
+        let dims = self.get_dimensions();
+        let elem_matrix: Vec<Vec<f64>> = vec![vec![0.0; dims.1]; dims.0]
+            .iter_mut()
+            .enumerate()
+            .map(|(i, z)| {
+                z.iter()
+                    .enumerate()
+                    .map(|(j, v)| v + cond(i as u32, j as u32) as f64)
+                    .collect()
+            })
+            .collect();
+
+        (self * Matrix(elem_matrix)).unwrap()
+    }
+
+    pub fn elem_transform_2(self, i: u32, j: u32, m: f64) -> Matrix {
+        let cond = |k, l| match (k == l, k == i) {
+            (true, true) => m,
+            (true, false) => 1.0,
+            (false, _) => 0.0,
+        };
+        let dims = self.get_dimensions();
+        let elem_matrix: Vec<Vec<f64>> = vec![vec![0.0; dims.1]; dims.0]
+            .iter_mut()
+            .enumerate()
+            .map(|(k, z)| {
+                z.iter()
+                    .enumerate()
+                    .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                    .collect()
+            })
+            .collect();
+
+        (self * Matrix(elem_matrix)).unwrap()
+    }
+    pub fn elem_transform_3(self, i: u32, j: u32, m: f64) -> Matrix {
+        let cond = |k, l| match (k == l, k == i, l == j) {
+            (_, true, true) => m,
+            (true, _, _) => 1.0,
+            (_, _, _) => 0.0,
+        };
+        let dims = self.get_dimensions();
+        let elem_matrix: Vec<Vec<f64>> = vec![vec![0.0; dims.1]; dims.0]
+            .iter_mut()
+            .enumerate()
+            .map(|(k, z)| {
+                z.iter()
+                    .enumerate()
+                    .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                    .collect()
+            })
+            .collect();
+
+        (self * Matrix(elem_matrix)).unwrap()
+    }
+
     pub fn make_into_step_form(&mut self) -> Matrix {
         todo!()
     }
 
-    // <<<<<<< Updated upstream
     // pub fn get_inverse(&mut self) -> Self {}
 
     pub fn append_row(mut self, row: Vec<f64>) -> Matrix {
         for i in 0..row.len() {
             self.0[i].push(row[i]);
-            // =======
-            //     pub fn append_row(m: &mut Matrix, row: Vec<f64>) -> Matrix {
-            //         for i in m.iter_mut() {
-            //             i.push(row[0]);
-            // >>>>>>> Stashed changes
         }
         return self;
     }
