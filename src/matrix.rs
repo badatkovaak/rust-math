@@ -2,12 +2,23 @@ use std::slice::{Iter, IterMut};
 
 #[derive(Debug)]
 pub struct Matrix(Vec<Vec<f64>>);
+// pub type Matrix2 = [[f64; 2]; 2];
+// pub type Matrix3 = [[f64; 3]; 3];
+// pub type Matrix = Vec<Vec<f64>>;
+// #[derive(Debug)]
+// pub struct Matrix(pub Vec<Vec<f64>>);
 
 impl Iterator for Matrix {
     type Item = Vec<f64>;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.0.iter().next().cloned()
+    }
+}
+
+impl Clone for Matrix {
+    fn clone(&self) -> Self {
+        return Self(self.0.clone());
     }
 }
 
@@ -29,11 +40,20 @@ impl std::ops::Add for Matrix {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
+        // <<<<<<< Updated upstream
         // return self::Matrix::myadd(self, rhs);
         self.iter()
             .zip(rhs.iter())
             .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
             .collect()
+        // =======
+        //         return self
+        //             .iter()
+        //             .zip(rhs.iter())
+        //             .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
+        //             .collect();
+        //         // return self::Matrix::myadd(self, rhs);
+        // >>>>>>> Stashed changes
     }
 }
 
@@ -107,14 +127,19 @@ impl Matrix {
 
     pub fn make_into_step_form(&mut self) -> Matrix {
         todo!()
-        // return *m;
     }
 
+    // <<<<<<< Updated upstream
     // pub fn get_inverse(&mut self) -> Self {}
 
     pub fn append_row(mut self, row: Vec<f64>) -> Matrix {
         for i in 0..row.len() {
             self.0[i].push(row[i]);
+            // =======
+            //     pub fn append_row(m: &mut Matrix, row: Vec<f64>) -> Matrix {
+            //         for i in m.iter_mut() {
+            //             i.push(row[0]);
+            // >>>>>>> Stashed changes
         }
         return self;
     }
