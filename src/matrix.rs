@@ -1,9 +1,16 @@
+use crate::utils;
 use std::cmp::Ordering;
 use std::ops;
 use std::slice::{Iter, IterMut};
 
 #[derive(Debug)]
 pub struct Matrix(pub Vec<Vec<f64>>);
+
+impl std::fmt::Display for Matrix {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.to_string())
+    }
+}
 
 impl Iterator for Matrix {
     type Item = Vec<f64>;
@@ -22,6 +29,19 @@ impl Clone for Matrix {
 impl FromIterator<Vec<f64>> for Matrix {
     fn from_iter<T: IntoIterator<Item = Vec<f64>>>(iter: T) -> Self {
         Self(Vec::from_iter(iter))
+    }
+}
+
+impl std::cmp::PartialEq for Matrix {
+    fn eq(&self, other: &Self) -> bool {
+        for i in self.0.iter().zip(other.0.iter()) {
+            for j in 0..i.0.len() {
+                if !utils::fequals(i.0[j], i.1[j], Some(0.0000000001)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
 
@@ -111,18 +131,20 @@ impl Matrix {
             (c1 || c2 || c3) as u32
         };
         let dims = self.get_dimensions();
-        let elem_matrix: Vec<Vec<f64>> = vec![vec![0.0; dims.1]; dims.0]
-            .iter_mut()
-            .enumerate()
-            .map(|(i, z)| {
-                z.iter()
-                    .enumerate()
-                    .map(|(j, v)| v + cond(i as u32, j as u32) as f64)
-                    .collect()
-            })
-            .collect();
-
-        (self * Matrix(elem_matrix)).unwrap()
+        let elem_matrix: Matrix = Matrix(
+            vec![vec![0.0; dims.1]; dims.0]
+                .iter_mut()
+                .enumerate()
+                .map(|(k, z)| {
+                    z.iter()
+                        .enumerate()
+                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                        .collect()
+                })
+                .collect(),
+        );
+        // println!("{}", elem_matrix);
+        (elem_matrix * self).unwrap()
     }
 
     pub fn elem_transform_2(self, i: u32, j: u32, m: f64) -> Matrix {
@@ -132,18 +154,20 @@ impl Matrix {
             (false, _) => 0.0,
         };
         let dims = self.get_dimensions();
-        let elem_matrix: Vec<Vec<f64>> = vec![vec![0.0; dims.1]; dims.0]
-            .iter_mut()
-            .enumerate()
-            .map(|(k, z)| {
-                z.iter()
-                    .enumerate()
-                    .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
-                    .collect()
-            })
-            .collect();
-
-        (self * Matrix(elem_matrix)).unwrap()
+        let elem_matrix: Matrix = Matrix(
+            vec![vec![0.0; dims.1]; dims.0]
+                .iter_mut()
+                .enumerate()
+                .map(|(k, z)| {
+                    z.iter()
+                        .enumerate()
+                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                        .collect()
+                })
+                .collect(),
+        );
+        // println!("{}", elem_matrix);
+        (elem_matrix * self).unwrap()
     }
 
     pub fn elem_transform_3(self, i: u32, j: u32, m: f64) -> Matrix {
@@ -153,18 +177,20 @@ impl Matrix {
             (_, _, _) => 0.0,
         };
         let dims = self.get_dimensions();
-        let elem_matrix: Vec<Vec<f64>> = vec![vec![0.0; dims.1]; dims.0]
-            .iter_mut()
-            .enumerate()
-            .map(|(k, z)| {
-                z.iter()
-                    .enumerate()
-                    .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
-                    .collect()
-            })
-            .collect();
-
-        (self * Matrix(elem_matrix)).unwrap()
+        let elem_matrix: Matrix = Matrix(
+            vec![vec![0.0; dims.1]; dims.0]
+                .iter_mut()
+                .enumerate()
+                .map(|(k, z)| {
+                    z.iter()
+                        .enumerate()
+                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                        .collect()
+                })
+                .collect(),
+        );
+        // println!("{}", elem_matrix);
+        (elem_matrix * self).unwrap()
     }
 
     pub fn make_into_step_form(&mut self) -> Matrix {
@@ -183,6 +209,17 @@ impl Matrix {
         }
         return self;
     }
+
+    pub fn to_string(&self) -> String {
+        self.0
+            .iter()
+            .map(|x| {
+                x.iter()
+                    .map(|y| format!("{}", y))
+                    .fold(String::from(" "), |acc, y| acc + &y + " ")
+            })
+            .fold(String::from(""), |acc, y| acc + &y + "\n ")
+    }
 }
 
 pub fn get_id_matrix(dim: u32) -> Matrix {
@@ -195,4 +232,32 @@ pub fn get_id_matrix(dim: u32) -> Matrix {
 
 pub fn scalar_to_matrix(value: f64, dim: u32) -> Matrix {
     get_id_matrix(dim).scalar_mult(value)
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::matrix;
+
+    #[test]
+    fn test_matrix_operations() {
+        let m1 = matrix::Matrix(vec![vec![1., 2.], vec![3., 4.]]);
+
+        assert_eq!(-m1, matrix::Matrix(vec![vec![-1., -2.], vec![-3., -4.]]));
+    }
+
+    #[test]
+    fn elementary_transformations() {
+        let m1 = matrix::Matrix(vec![vec![1., 2.], vec![3., 4.]]);
+        let m2 = matrix::Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+        // println!("{}", m1);
+
+        assert_eq!(
+            m2.elem_transform_1(0, 1),
+            matrix::Matrix(vec![vec![4., 5., 6.], vec![1., 2., 3.], vec![7., 8., 9.]])
+        );
+        assert_eq!(
+            m1.elem_transform_1(0, 1),
+            matrix::Matrix(vec![vec![3., 4.], vec![1., 2.]])
+        );
+    }
 }
