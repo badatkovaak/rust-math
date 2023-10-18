@@ -15,13 +15,13 @@ fn main() {
     // let s1 = utils::sqrt_doom(2_000_000_000_000.0);
     // let s2 = utils::sqrt_force(2_000_000_000_000.0);
     // let s3 = utils::one_over_sqrt(2000000.0);
-    let m1 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
+    let m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
     let x = Matrix::scalar_mult(m1.clone(), 3.);
     // println!("{} {} {}", s2, 1, s1);
-    // println!("{:?}", m1.append_row());
-    let mut a: [Vec<u32>; 3] = [vec![5, 4, 3, 2, 1], vec![], vec![]];
-    misc::hanoi::myprint(&a);
-    misc::hanoi::solve(&mut a, 5, 1, 2);
+    println!("{:?}", m1.append_row(vec![5.0, 6.0, 10.]));
+    // let mut a: [Vec<u32>; 3] = [vec![5, 4, 3, 2, 1], vec![], vec![]];
+    // misc::hanoi::myprint(&a);
+    // misc::hanoi::solve(&mut a, 5, 1, 2);
     // >>>>>>> Stashed changes
     // println!("{:?}", vector::scalar_mult(&vec1, 10.));
 }

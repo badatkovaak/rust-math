@@ -29,3 +29,7 @@ pub fn sqrt_force(n: f64) -> f64 {
     }
     return res;
 }
+
+pub fn fequals(x: f64, y: f64, diff: Option<f64>) -> bool {
+    f64::abs(x - y) <= diff.unwrap_or(0.000001)
+}

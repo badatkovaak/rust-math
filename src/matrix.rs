@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::ops;
 use std::slice::{Iter, IterMut};
 
@@ -144,6 +145,7 @@ impl Matrix {
 
         (self * Matrix(elem_matrix)).unwrap()
     }
+
     pub fn elem_transform_3(self, i: u32, j: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i, l == j) {
             (_, true, true) => m,
@@ -166,10 +168,14 @@ impl Matrix {
     }
 
     pub fn make_into_step_form(&mut self) -> Matrix {
-        todo!()
+        // self.0.sort_by(|x, y| match (x[0], y[0]) {
+        //     (x1, y1) if x1 == y1 => Ordering::Equal,
+        //     (x1, y1) if x1 > y1 => Ordering::Greater,
+        //     (x1, y1) if x1 < y1 => Ordering::Less,
+        //     (_, _) => unreachable!(),
+        // });
+        return get_id_matrix(3);
     }
-
-    // pub fn get_inverse(&mut self) -> Self {}
 
     pub fn append_row(mut self, row: Vec<f64>) -> Matrix {
         for i in 0..row.len() {
