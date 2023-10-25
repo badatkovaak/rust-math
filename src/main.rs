@@ -15,11 +15,11 @@ fn main() {
     // let s1 = utils::sqrt_doom(2_000_000_000_000.0);
     // let s2 = utils::sqrt_force(2_000_000_000_000.0);
     // let s3 = utils::one_over_sqrt(2000000.0);
-    let m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
-    // let x = Matrix::scalar_mult(m1.clone(), 3.);
-    // println!("{} {} {}", s2, 1, s1);
+    let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+    let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]); // let x = Matrix::scalar_mult(m1.clone(), 3.);
+                                                                                     // println!("{} {} {}", s2, 1, s1);
 
-    println!("{:?} \n {}", m1, m1);
+    println!("{} \n {}", m2.clone(), m2.make_into_step_form());
     // println!("{:?}", m1.append_row(vec![5.0, 6.0, 10.]));
     // let mut a: [Vec<u32>; 3] = [vec![5, 4, 3, 2, 1], vec![], vec![]];
     // misc::hanoi::myprint(&a);

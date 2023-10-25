@@ -147,7 +147,7 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
-    pub fn elem_transform_2(self, i: u32, j: u32, m: f64) -> Matrix {
+    pub fn elem_transform_2(self, i: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i) {
             (true, true) => m,
             (true, false) => 1.0,
@@ -194,13 +194,85 @@ impl Matrix {
     }
 
     pub fn make_into_step_form(&mut self) -> Matrix {
-        // self.0.sort_by(|x, y| match (x[0], y[0]) {
-        //     (x1, y1) if x1 == y1 => Ordering::Equal,
-        //     (x1, y1) if x1 > y1 => Ordering::Greater,
-        //     (x1, y1) if x1 < y1 => Ordering::Less,
-        //     (_, _) => unreachable!(),
-        // });
-        return get_id_matrix(3);
+        // fn helper(m: &mut Matrix) -> Matrix {
+        // if self.0.len() == 0 {
+        //     return Matrix(vec![vec![]]);
+        // } else if self.0.len() == 1 {
+        //     return Matrix(vec![vec![self.0[0][0]]]);
+        // }
+        let mut res = self.clone();
+
+        // println!("{}", res);
+
+        let mut i: u32 = 0;
+        while res.0[0][0] == 0.0 {
+            // println!("{}", i);
+            res = res.elem_transform_1(0, i as u32);
+            i += 1;
+            if i as usize >= res.0.len() {
+                return self.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
+            }
+        }
+
+        if res.0[0][0] != 1.0 {
+            let v = res.0[0][0];
+            res = res.elem_transform_2(0, 1.0 / v);
+        }
+
+        println!("{}", res);
+        for i in 1..res.0.len() {
+            let v = res.0[i][0];
+            println!("{}", v);
+            res = res.elem_transform_3(i as u32, 0, -v);
+        }
+        println!("{}", res);
+
+        return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
+        // }
+
+        // return get_id_matrix(3);
+    }
+
+    pub fn stitch(&self, m: &Matrix) -> Matrix {
+        let mut res = self.clone();
+        let (d1, d2) = self.get_dimensions();
+        for i in 1..d1 {
+            for j in 1..d2 {
+                res.0[i][j] = m.0[i - 1][j - 1];
+            }
+        }
+        return res;
+    }
+
+    pub fn cut(&self, rows: u32, columns: u32) -> Matrix {
+        let mut res = self.clone();
+        for _ in 0..rows {
+            res.0.push(vec![0.0; res.0[0].len()]);
+            res.0.remove(0);
+        }
+        for i in 0..res.0.len() {
+            for _ in 0..columns {
+                res.0[i].remove(0);
+                res.0[i].push(0.0);
+            }
+        }
+        // if rows == 0 && columns == 1 {
+        //     // for i in 0..res.0.len()
+        // }
+        return res;
+    }
+
+    pub fn cut_mut(mut self, rows: u32, columns: u32) -> Matrix {
+        // let mut res = self.clone();
+        for _ in 0..rows {
+            self.0.remove(0);
+        }
+        for (i, _) in self.iter().enumerate() {
+            for _ in 0..columns {
+                self.0[i][0];
+            }
+        }
+        return self;
     }
 
     pub fn append_row(mut self, row: Vec<f64>) -> Matrix {
@@ -218,7 +290,7 @@ impl Matrix {
                     .map(|y| format!("{}", y))
                     .fold(String::from(" "), |acc, y| acc + &y + " ")
             })
-            .fold(String::from(""), |acc, y| acc + &y + "\n ")
+            .fold(String::from(" "), |acc, y| acc + &y + "\n ")
     }
 }
 
