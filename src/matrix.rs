@@ -1,5 +1,6 @@
 use crate::utils;
 use std::cmp::Ordering;
+use std::iter::zip;
 use std::ops;
 use std::slice::{Iter, IterMut};
 
@@ -57,9 +58,12 @@ impl ops::Add for Matrix {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        self.iter()
-            .zip(rhs.iter())
-            .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
+        // self.iter()
+        //     .zip(rhs.iter())
+        //     .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
+        //     .collect()
+        zip(self.iter(), rhs.iter())
+            .map(|(x, y)| zip(x.iter(), y.iter()).map(|(x, y)| x + y).collect())
             .collect()
     }
 }
@@ -170,6 +174,7 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
+    // #[inline]
     pub fn elem_transform_3(self, i: u32, j: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i, l == j) {
             (_, true, true) => m,
@@ -193,13 +198,23 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
+    // #[inline]
+    pub fn count_elems(self: &Matrix) -> u64 {
+        println!("{}", self);
+        self.iter()
+            .map(|x| {
+                x.iter()
+                    .map(|y| (!utils::fequals(*y, 0.0, None) as u64) * 1)
+                    .sum::<u64>()
+            })
+            .sum::<u64>()
+    }
+
     pub fn make_into_step_form(&mut self) -> Matrix {
-        // fn helper(m: &mut Matrix) -> Matrix {
-        // if self.0.len() == 0 {
-        //     return Matrix(vec![vec![]]);
-        // } else if self.0.len() == 1 {
-        //     return Matrix(vec![vec![self.0[0][0]]]);
-        // }
+        if self.count_elems() <= 1 {
+            return self.clone();
+        }
+
         let mut res = self.clone();
 
         // println!("{}", res);
@@ -219,16 +234,15 @@ impl Matrix {
             res = res.elem_transform_2(0, 1.0 / v);
         }
 
-        println!("{}", res);
+        // println!("{}", res);
         for i in 1..res.0.len() {
             let v = res.0[i][0];
-            println!("{}", v);
+            // println!("{}", v);
             res = res.elem_transform_3(i as u32, 0, -v);
         }
-        println!("{}", res);
+        // println!("{}", res);
 
         return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
-        // }
 
         // return get_id_matrix(3);
     }
@@ -241,7 +255,7 @@ impl Matrix {
                 res.0[i][j] = m.0[i - 1][j - 1];
             }
         }
-        return res;
+        res
     }
 
     pub fn cut(&self, rows: u32, columns: u32) -> Matrix {
@@ -256,14 +270,10 @@ impl Matrix {
                 res.0[i].push(0.0);
             }
         }
-        // if rows == 0 && columns == 1 {
-        //     // for i in 0..res.0.len()
-        // }
-        return res;
+        res
     }
 
     pub fn cut_mut(mut self, rows: u32, columns: u32) -> Matrix {
-        // let mut res = self.clone();
         for _ in 0..rows {
             self.0.remove(0);
         }
@@ -272,14 +282,14 @@ impl Matrix {
                 self.0[i][0];
             }
         }
-        return self;
+        self
     }
 
     pub fn append_row(mut self, row: Vec<f64>) -> Matrix {
         for i in 0..row.len() {
             self.0[i].push(row[i]);
         }
-        return self;
+        self
     }
 
     pub fn to_string(&self) -> String {
@@ -308,28 +318,57 @@ pub fn scalar_to_matrix(value: f64, dim: u32) -> Matrix {
 
 #[cfg(test)]
 mod tests {
-    use crate::matrix;
+    use crate::matrix::Matrix;
 
     #[test]
     fn test_matrix_operations() {
-        let m1 = matrix::Matrix(vec![vec![1., 2.], vec![3., 4.]]);
+        let m1 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
 
-        assert_eq!(-m1, matrix::Matrix(vec![vec![-1., -2.], vec![-3., -4.]]));
+        assert_eq!(-m1, Matrix(vec![vec![-1., -2.], vec![-3., -4.]]));
     }
 
     #[test]
     fn elementary_transformations() {
-        let m1 = matrix::Matrix(vec![vec![1., 2.], vec![3., 4.]]);
-        let m2 = matrix::Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+        let m1 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
+        let m2 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
         // println!("{}", m1);
 
         assert_eq!(
             m2.elem_transform_1(0, 1),
-            matrix::Matrix(vec![vec![4., 5., 6.], vec![1., 2., 3.], vec![7., 8., 9.]])
+            Matrix(vec![vec![4., 5., 6.], vec![1., 2., 3.], vec![7., 8., 9.]])
         );
         assert_eq!(
             m1.elem_transform_1(0, 1),
-            matrix::Matrix(vec![vec![3., 4.], vec![1., 2.]])
+            Matrix(vec![vec![3., 4.], vec![1., 2.]])
+        );
+    }
+
+    #[test]
+    fn step_form() {
+        let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+
+        let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+
+        let mut m3 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
+
+        let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
+
+        assert_eq!(
+            m1.make_into_step_form(),
+            Matrix(vec![vec![1., 2., 3.], vec![0., 1., 2.], vec![0.; 3]])
+        );
+
+        assert_eq!(
+            m2.make_into_step_form(),
+            Matrix(vec![vec![1., 1.5, 2.], vec![0., 1., 2.], vec![0.; 3]])
+        );
+        assert_eq!(
+            m3.make_into_step_form(),
+            Matrix(vec![vec![1., 2.], vec![0., -2.]])
+        );
+        assert_eq!(
+            m4.make_into_step_form(),
+            Matrix(vec![vec![1., 0.], vec![0., 1.]])
         );
     }
 }

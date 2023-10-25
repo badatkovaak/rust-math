@@ -30,6 +30,30 @@ pub fn sqrt_force(n: f64) -> f64 {
     return res;
 }
 
+#[inline]
 pub fn fequals(x: f64, y: f64, diff: Option<f64>) -> bool {
-    f64::abs(x - y) <= diff.unwrap_or(0.000001)
+    f64::abs(x - y) <= diff.unwrap_or(0.000000001)
 }
+
+macro_rules! max_of_two {
+    ($x:ty, $name:tt) => {
+        pub fn $name(a: $x, b: $x) -> $x {
+            a * ((a >= b) as $x) + b * ((b > a) as $x)
+        }
+    };
+}
+
+max_of_two!(u8, max_of_two_u8);
+max_of_two!(u16, max_of_two_u16);
+max_of_two!(u32, max_of_two_u32);
+max_of_two!(u64, max_of_two_u64);
+max_of_two!(u128, max_of_two_u128);
+max_of_two!(usize, max_of_two_usize);
+
+max_of_two!(i8, max_of_two_i8);
+max_of_two!(i16, max_of_two_i16);
+max_of_two!(i32, max_of_two_i32);
+max_of_two!(i64, max_of_two_i64);
+max_of_two!(i128, max_of_two_i128);
+
+// pub fn divmod
