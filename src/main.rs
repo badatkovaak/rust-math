@@ -4,6 +4,7 @@ pub mod equations;
 pub mod matrix;
 pub mod matrix2;
 pub mod misc;
+pub mod sorting;
 pub mod utils;
 pub mod vector;
 pub mod vector_gen;
@@ -27,15 +28,20 @@ fn main() {
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    let b1 = BigInt(vec![240, 4]);
-    let b2 = BigInt(vec![130, 3]);
-    println!(
-        "{:?} \n{} {} {}",
-        &b1 + &b2,
-        (&b1 + &b2).to_decimal_u(),
-        b1.to_decimal_u(),
-        (-b2).to_decimal_u()
-    );
+    // let b1 = BigInt(vec![240, 4]);
+    // let b2 = BigInt(vec![130, 3]);
+    // println!(
+    //     "{:?} \n{} {} {}",
+    //     &b1 + &b2,
+    //     (&b1 + &b2).to_decimal_u(),
+    //     b1.to_decimal_u(),
+    //     (-b2).to_decimal_u()
+    // );
+    // let v1 = vec![9, 5, 2, 2, 6, 1, 1, 0, 2, 7];
+    let mut v1: Vec<u64> = vec![0; 10];
+    sorting::fill_random_u64(&mut v1);
+    println!("{:?}", v1);
+    println!("{:?}", sorting::bubble_sort(&v1));
 
     // println!("{} {} {}", s2, 1, s1);
     // println!("{}", m1.count_elems());
