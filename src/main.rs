@@ -11,7 +11,7 @@ pub mod vector_gen;
 
 use matrix::Matrix;
 
-use crate::arithmetic::big_int::BigInt;
+use crate::arithmetic::{big_int::BigInt, big_string::BigString};
 
 fn main() {
     // let vec1: Vec<f64> = vec![1., 2., 3.];
@@ -28,8 +28,9 @@ fn main() {
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    // let b1 = BigInt(vec![240, 4]);
+    let b1 = BigInt::construct("123".to_string());
     // let b2 = BigInt(vec![130, 3]);
+    println!("{:?}", b1);
     // println!(
     //     "{:?} \n{} {} {}",
     //     &b1 + &b2,
@@ -38,10 +39,19 @@ fn main() {
     //     (-b2).to_decimal_u()
     // );
     // let v1 = vec![9, 5, 2, 2, 6, 1, 1, 0, 2, 7];
+    // let bs1 = BigString::construct(String::from("1234"));
     let mut v1: Vec<u64> = vec![0; 10];
     sorting::fill_random_u64(&mut v1);
     println!("{:?}", v1);
     println!("{:?}", sorting::bubble_sort(&v1));
+    // println!(
+    //     "{:?}",
+    //     bs1 // String::from("1234")
+    //         //     .chars()
+    //         //     .map(|x| ((x as u8) < 58) && ((x as u8) > 47))
+    //         //     .filter(|x| *x)
+    //         //     .collect::<Vec<bool>>()
+    // );
 
     // println!("{} {} {}", s2, 1, s1);
     // println!("{}", m1.count_elems());
