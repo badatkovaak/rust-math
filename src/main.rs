@@ -11,6 +11,8 @@ pub mod vector_gen;
 
 use matrix::Matrix;
 
+use crate::arithmetic::big_digit::BigDigit;
+use crate::arithmetic::big_uint::BigUInt;
 use crate::arithmetic::{big_int::BigInt, big_string::BigString};
 
 fn main() {
@@ -18,19 +20,19 @@ fn main() {
     // let vec2: Vec<f64> = vec![4., 5., 6.];
     // let vec12 = vector::add(&vec1, &vec2);
 
-    // let s1 = utils::sqrt_doom(2_000_000_000_000.0);
-    // let s2 = utils::sqrt_force(2_000_000_000_000.0);
-    // let s3 = utils::one_over_sqrt(2000000.0);
-
     // let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
     let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
     // let mut m3 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    let b1 = BigInt::construct("123".to_string());
+    let b1 = BigUInt(vec![BigDigit(10), BigDigit(20)]);
+    let b2 = BigUInt(vec![BigDigit(20), BigDigit(10)]);
+    // let b1 = BigInt::construct("123".to_string());
     // let b2 = BigInt(vec![130, 3]);
     println!("{:?}", b1);
+    println!("{:?}", b2);
+    println!("{:?}", b1 + b2);
     // println!(
     //     "{:?} \n{} {} {}",
     //     &b1 + &b2,
@@ -40,10 +42,10 @@ fn main() {
     // );
     // let v1 = vec![9, 5, 2, 2, 6, 1, 1, 0, 2, 7];
     // let bs1 = BigString::construct(String::from("1234"));
-    let mut v1: Vec<u64> = vec![0; 10];
-    sorting::fill_random_u64(&mut v1);
-    println!("{:?}", v1);
-    println!("{:?}", sorting::bubble_sort(&v1));
+    // let mut v1: Vec<u64> = vec![0; 10];
+    // sorting::fill_random_u64(&mut v1);
+    // println!("{:?}", v1);
+    // println!("{:?}", sorting::bubble_sort(&v1));
     // println!(
     //     "{:?}",
     //     bs1 // String::from("1234")

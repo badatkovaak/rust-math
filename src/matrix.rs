@@ -35,6 +35,10 @@ impl FromIterator<Vec<f64>> for Matrix {
 
 impl std::cmp::PartialEq for Matrix {
     fn eq(&self, other: &Self) -> bool {
+        if self.get_dimensions() != other.get_dimensions() {
+            return false;
+        }
+
         for i in self.0.iter().zip(other.0.iter()) {
             for j in 0..i.0.len() {
                 if !utils::fequals(i.0[j], i.1[j], Some(0.0000000001)) {
@@ -42,6 +46,7 @@ impl std::cmp::PartialEq for Matrix {
                 }
             }
         }
+
         return true;
     }
 }

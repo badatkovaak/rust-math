@@ -1,13 +1,23 @@
 use std::ops;
 
-#[derive(Debug)]
-pub struct BigInt(Vec<u64>);
+use super::big_uint::BigUInt;
+use crate::arithmetic::sign::Sign;
 
-impl std::fmt::Display for BigInt {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        return write!(f, "{}", self.to_decimal_string());
-    }
-}
+#[derive(Debug, Clone)]
+pub struct BigInt(Sign, BigUInt);
+
+// impl ops::Add for BigInt {
+//     type Output = BigInt;
+// }
+
+// #[derive(Debug)]
+// pub struct BigInt(Vec<u64>);
+//
+// impl std::fmt::Display for BigInt {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         return write!(f, "{}", self.to_decimal_string());
+//     }
+// }
 //
 // impl ops::Neg for BigInt {
 //     type Output = BigInt;
@@ -53,39 +63,39 @@ impl std::fmt::Display for BigInt {
 //     }
 // }
 
-impl BigInt {
-    pub fn to_decimal_u(&self) -> u128 {
-        let mut res: u128 = 0;
-        for i in 0..self.0.len() {
-            res += (self.0[i] as u128) * (256 as u128).pow(i as u32);
-        }
-        res
-    }
-
-    pub fn to_decimal_string(&self) -> String {
-        // for i in self.iter() {
-        //     let mut x = i;
-        //     let res = String::new();
-        //     while
-        // }
-        return String::from("");
-    }
-
-    pub fn construct(s: String) -> Option<BigInt> {
-        let cond: bool = s
-            .chars()
-            .filter(|x| ((*x as u8) < 58) && ((*x as u8) > 47))
-            // .filter(|x| *x)
-            .collect::<Vec<char>>()
-            .len()
-            != s.len() + (s.get(0..1) == Some("-")) as usize;
-
-        if !s.is_ascii() || cond {
-            return None;
-        }
-
-        for i in ((s.get(0..1) == Some("-")) as usize)..s.len() {}
-        return Some(BigInt(vec![1]));
-        // for i in
-    }
-}
+// impl BigInt {
+//     pub fn to_decimal_u(&self) -> u128 {
+//         let mut res: u128 = 0;
+//         for i in 0..self.0.len() {
+//             res += (self.0[i] as u128) * (256 as u128).pow(i as u32);
+//         }
+//         res
+//     }
+//
+//     pub fn to_decimal_string(&self) -> String {
+//         // for i in self.iter() {
+//         //     let mut x = i;
+//         //     let res = String::new();
+//         //     while
+//         // }
+//         return String::from("");
+//     }
+//
+//     pub fn construct(s: String) -> Option<BigInt> {
+//         let cond: bool = s
+//             .chars()
+//             .filter(|x| ((*x as u8) < 58) && ((*x as u8) > 47))
+//             // .filter(|x| *x)
+//             .collect::<Vec<char>>()
+//             .len()
+//             != s.len() + (s.get(0..1) == Some("-")) as usize;
+//
+//         if !s.is_ascii() || cond {
+//             return None;
+//         }
+//
+//         for i in ((s.get(0..1) == Some("-")) as usize)..s.len() {}
+//         return Some(BigInt(vec![1]));
+//         // for i in
+//     }
+// }
