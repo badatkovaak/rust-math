@@ -1,7 +1,7 @@
 use std::ops;
 
 use super::big_uint::BigUInt;
-use crate::arithmetic::sign::Sign;
+use crate::long::sign::Sign;
 
 #[derive(Debug, Clone)]
 pub struct BigInt(Sign, BigUInt);

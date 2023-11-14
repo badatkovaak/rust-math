@@ -1,6 +1,6 @@
-pub mod arithmetic;
 pub mod complex_nums;
 pub mod equations;
+pub mod long;
 pub mod matrix;
 pub mod matrix2;
 pub mod misc;
@@ -11,9 +11,9 @@ pub mod vector_gen;
 
 use matrix::Matrix;
 
-use crate::arithmetic::big_digit::BigDigit;
-use crate::arithmetic::big_uint::BigUInt;
-use crate::arithmetic::{big_int::BigInt, big_string::BigString};
+use crate::long::big_digit::BigDigit;
+use crate::long::big_uint::BigUInt;
+use crate::long::{big_int::BigInt, big_string::BigString};
 
 fn main() {
     // let vec1: Vec<f64> = vec![1., 2., 3.];
@@ -26,13 +26,19 @@ fn main() {
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    let b1 = BigUInt(vec![BigDigit(10), BigDigit(20)]);
-    let b2 = BigUInt(vec![BigDigit(20), BigDigit(10)]);
+    let b1 = BigUInt(vec![BigDigit(1), BigDigit(1)]);
+    let b2 = BigUInt(vec![BigDigit(20), BigDigit(0)]);
     // let b1 = BigInt::construct("123".to_string());
     // let b2 = BigInt(vec![130, 3]);
+
     println!("{:?}", b1);
     println!("{:?}", b2);
-    println!("{:?}", b1 + b2);
+    // println!("{:?}", BigDigit(10) < BigDigit(9));
+    println!("{:?}", b1.clone() + b2.clone());
+    println!("{:?}", b1.clone() - b2.clone());
+    println!("{:?}", b2.clone() - b1.clone());
+
+    // println!("{:?}", b1.clone() == b2.clone());
     // println!(
     //     "{:?} \n{} {} {}",
     //     &b1 + &b2,
