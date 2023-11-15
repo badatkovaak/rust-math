@@ -3,6 +3,7 @@ use std::cmp;
 use std::cmp::Ordering;
 use std::iter::zip;
 use std::ops;
+use std::process::Command;
 use std::u64::MAX;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -57,32 +58,16 @@ impl ops::Sub for BigUInt {
     type Output = Option<BigUInt>;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        // let borrow = BigDigit(0);
-        // if self < rhs {
-        //     return None;
-        // }
-        // } else if self == rhs {
-        //     return BigUInt(vec![BigDigit()]);
-        // }
-
         let mut borrowed: u8 = 0;
-
-        // let
         let mut temp1: BigDigit;
         let mut temp2: BigDigit;
-        let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
 
-        // if self.0.len() != rhs.0.len() {
-        //     if self.0.len() > rhs.0.len() {
-        //         while self.0.len() != rhs.0.len() {
-        //             rhs.0.push(BigDigit(0))
-        //         }
-        //     }
-        // }
+        let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
 
         let mut result = BigUInt(vec![BigDigit(0); max_len]);
 
         for i in 0..max_len {
+            // println!("{:?}  {:?}", self.0[i], rhs.0[i]);
             if borrowed != 0 {
                 borrowed -= 1;
 
@@ -105,6 +90,7 @@ impl ops::Sub for BigUInt {
             } else {
                 temp2 = (temp1 - rhs.0[i]).unwrap();
             }
+            println!("{:?}  {:?}", temp1, temp2);
 
             result.0[i] = temp2;
         }
@@ -115,4 +101,37 @@ impl ops::Sub for BigUInt {
 
         return Some(result);
     }
+}
+
+// impl BigUInt {
+//     pub fn convert_to_bc(self) -> String {
+//
+//     }
+// }
+
+#[derive(Debug)]
+pub enum Operation {
+    Plus,
+    Minus,
+}
+
+// pub fn test_with_bc(n1: BigUInt, n2: BigUInt, op: Operation) -> bool {
+//     fn call_bc(args: &str) -> String {
+//         let output = Command::new("echo")
+//             .arg(args.to_owned() + "| temp.txt")
+//             .output().and_then(|x| Command::new("bc").args());
+//         String::from("Hi")
+//         // Command::new("bc").arg()
+//     }
+//     call_bc("10 + 20");
+//     true
+// }
+
+#[cfg(test)]
+mod tests {
+
+    // #[test]
+    // fn test_big_uint() {
+    //     unimplemented!();
+    // }
 }

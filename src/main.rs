@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+#![allow(unused_imports)]
 pub mod complex_nums;
 pub mod compute;
 pub mod equations;
@@ -28,17 +30,18 @@ fn main() {
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    let b1 = BigUInt(vec![BigDigit(11), BigDigit(11)]);
-    let b2 = BigUInt(vec![BigDigit(20), BigDigit(10)]);
+    let b1 = BigUInt(vec![BigDigit(0), BigDigit(11), BigDigit(2)]);
+    let b2 = BigUInt(vec![BigDigit(10), BigDigit(1), BigDigit(1)]);
     // let b1 = BigInt::construct("123".to_string());
     // let b2 = BigInt(vec![130, 3]);
 
+    println!();
     println!("{:?}", b1);
     println!("{:?}", b2);
     // println!("{:?}", BigDigit(10) < BigDigit(9));
-    println!("{:?}", b1.clone() + b2.clone());
+    // println!("{:?}", b1.clone() + b2.clone());
     println!("{:?}", b1.clone() - b2.clone());
-    println!("{:?}", b2.clone() - b1.clone());
+    // println!("{:?}", b2.clone() - b1.clone());
 
     // println!("{:?}", b1.clone() == b2.clone());
     // println!(
@@ -72,6 +75,6 @@ fn main() {
     // let mut a: [Vec<u32>; 3] = [vec![5, 4, 3, 2, 1], vec![], vec![]];
     // misc::hanoi::myprint(&a);
     // misc::hanoi::solve(&mut a, 5, 1, 2);
-    // >>>>>>> Stashed changes
     // println!("{:?}", vector::scalar_mult(&vec1, 10.));
+    println!()
 }
