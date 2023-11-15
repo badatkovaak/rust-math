@@ -1,5 +1,3 @@
-// pub mod utils {
-
 pub fn one_over_sqrt(n: f64) -> f64 {
     let mut i: u64 = unsafe { std::mem::transmute::<_, u64>(n) };
     i = 0x5FE6EB50C7B537A9 - (i >> 1);
@@ -28,6 +26,32 @@ pub fn sqrt_force(n: f64) -> f64 {
         res = (res + n / res) / 2.0;
     }
     return res;
+}
+
+pub fn agm(x: f64, y: f64) -> f64 {
+    let mut a = x;
+    let mut b = y;
+    for _i in 0..20 {
+        (a, b) = ((a + b) / 2., f64::sqrt(a * b));
+    }
+    (a + b) / 2.
+}
+
+pub fn factorial(n: u64) -> u64 {
+    let mut res = 1;
+    for i in 2..n {
+        res *= i;
+    }
+    res
+}
+
+pub fn factorial_f64(n: u64) -> f64 {
+    let mut res = 1.0;
+    for i in 2..=n {
+        res *= i as f64;
+    }
+    // println!("{}", res);
+    res
 }
 
 #[inline]

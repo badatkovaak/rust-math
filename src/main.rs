@@ -1,9 +1,11 @@
 pub mod complex_nums;
+pub mod compute;
 pub mod equations;
 pub mod long;
 pub mod matrix;
 pub mod matrix2;
 pub mod misc;
+pub mod quaternion;
 pub mod sorting;
 pub mod utils;
 pub mod vector;
@@ -13,7 +15,7 @@ use matrix::Matrix;
 
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
-use crate::long::{big_int::BigInt, big_string::BigString};
+// use crate::long::{big_int::BigInt, big_string::BigString};
 
 fn main() {
     // let vec1: Vec<f64> = vec![1., 2., 3.];
@@ -21,13 +23,13 @@ fn main() {
     // let vec12 = vector::add(&vec1, &vec2);
 
     // let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
-    let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+    // let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
     // let mut m3 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    let b1 = BigUInt(vec![BigDigit(1), BigDigit(1)]);
-    let b2 = BigUInt(vec![BigDigit(20), BigDigit(0)]);
+    let b1 = BigUInt(vec![BigDigit(11), BigDigit(11)]);
+    let b2 = BigUInt(vec![BigDigit(20), BigDigit(10)]);
     // let b1 = BigInt::construct("123".to_string());
     // let b2 = BigInt(vec![130, 3]);
 

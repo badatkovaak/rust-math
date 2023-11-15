@@ -101,7 +101,7 @@ impl ops::Sub for BigUInt {
 
             if temp1 < rhs.0[i] {
                 borrowed += 1;
-                temp2 = (rhs.0[i] - temp1).unwrap();
+                temp2 = (BigDigit(MAX) - (rhs.0[i] - temp1).unwrap()).unwrap();
             } else {
                 temp2 = (temp1 - rhs.0[i]).unwrap();
             }
