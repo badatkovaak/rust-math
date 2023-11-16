@@ -3,6 +3,7 @@
 #![allow(unused_variables)]
 pub mod complex_nums;
 pub mod compute;
+pub mod constants;
 pub mod equations;
 pub mod long;
 pub mod matrix;
@@ -16,11 +17,20 @@ pub mod vector_gen;
 
 use matrix::Matrix;
 
+use crate::compute::general::*;
+use crate::constants::{E, LN2};
+// use crate::complex_nums;
+// use crate::compute;
+// use crate::long;
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
+// use crate::misc;
+use complex_nums::c_algebraic::CAlgebraic;
+use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
 
 fn main() {
+    println!();
     // let vec1: Vec<f64> = vec![1., 2., 3.];
     // let vec2: Vec<f64> = vec![4., 5., 6.];
     // let vec12 = vector::add(&vec1, &vec2);
@@ -31,18 +41,42 @@ fn main() {
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
 
-    let b1 = BigUInt(vec![BigDigit(0), BigDigit(11), BigDigit(2)]);
-    let b2 = BigUInt(vec![BigDigit(10), BigDigit(1), BigDigit(1)]);
+    // let c1 = CAlgebraic(1., 1.);
+    // let c2 = CAlgebraic(-1., 1.);
+    //
+    // println!("{}", c1 + c2);
+    // println!("{}", c1 - c2);
+    // println!("{}", c1 * c2);
+    // println!("{}", c1 / c2);
+
+    println!("{}", exp(1.));
+    println!("{}", E);
+    println!("{}", ln1p(0.5));
+    println!("{}", LN2);
+    // println!("{}", ln(2.));
+    println!("{}", ln_app(2.));
+    println!("{}", ln_newton(2.));
+    // println!(
+    //     "{}",
+    //     compute::integration::simpsons_rule(0., 2., &(|x| compute::trig::cos(x)))
+    // );
+    // println!(
+    //     "{}",
+    //     compute::integration::trapezoidal(0., 2., &(|x| compute::trig::cos(x)))
+    // );
+
+    // let b1 = BigUInt(vec![BigDigit(0), BigDigit(11), BigDigit(2)]);
+    // let b2 = BigUInt(vec![BigDigit(10), BigDigit(1), BigDigit(1)]);
     // let b1 = BigInt::construct("123".to_string());
     // let b2 = BigInt(vec![130, 3]);
 
-    println!();
-    println!("{:?}", b1);
-    println!("{:?}", b2);
-    // println!("{:?}", BigDigit(10) < BigDigit(9));
-    // println!("{:?}", b1.clone() + b2.clone());
-    println!("{:?}", b1.clone() - b2.clone());
-    // println!("{:?}", b2.clone() - b1.clone());
+    // println!();
+    // println!("{:?}", b1);
+    // println!("{:?}", b2);
+    // // println!("{:?}", BigDigit(10) < BigDigit(9));
+    // // println!("{:?}", b1.clone() + b2.clone());
+    // println!("{:?}", b1.clone() - b2.clone());
+    // // println!("{:?}", b2.clone() - b1.clone());
 
     // println!("{:?}", b1.clone() == b2.clone());
     // println!(
