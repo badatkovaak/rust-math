@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
+#![allow(unused_variables)]
 pub mod complex_nums;
 pub mod compute;
 pub mod equations;
@@ -51,6 +52,7 @@ fn main() {
     //     b1.to_decimal_u(),
     //     (-b2).to_decimal_u()
     // );
+    // let v1 = vec![1,2,3].pop()
     // let v1 = vec![9, 5, 2, 2, 6, 1, 1, 0, 2, 7];
     // let bs1 = BigString::construct(String::from("1234"));
     // let mut v1: Vec<u64> = vec![0; 10];

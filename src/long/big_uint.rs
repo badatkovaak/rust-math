@@ -54,54 +54,76 @@ impl ops::Add for BigUInt {
     }
 }
 
-impl ops::Sub for BigUInt {
-    type Output = Option<BigUInt>;
+macro_rules! sub_for_BigUInt {
+    ($x:ty) => {
+        impl ops::Sub for $x {
+            type Output = Option<BigUInt>;
 
-    fn sub(self, rhs: Self) -> Self::Output {
-        let mut borrowed: u8 = 0;
-        let mut temp1: BigDigit;
-        let mut temp2: BigDigit;
+            fn sub(self, rhs: Self) -> Self::Output {
+                let mut borrowed: u8 = 0;
+                let mut d1: BigDigit;
+                let mut d2: BigDigit;
+                let mut temp1: BigDigit;
+                let mut temp2: BigDigit;
 
-        let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
+                let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
 
-        let mut result = BigUInt(vec![BigDigit(0); max_len]);
+                let mut result = BigUInt(vec![BigDigit(0); max_len]);
 
-        for i in 0..max_len {
-            // println!("{:?}  {:?}", self.0[i], rhs.0[i]);
-            if borrowed != 0 {
-                borrowed -= 1;
+                for i in 0..max_len {
+                    d1 = self.0.get(i..i + 1).unwrap_or(&[BigDigit(0)])[0];
+                    d2 = rhs.0.get(i..i + 1).unwrap_or(&[BigDigit(0)])[0];
 
-                match self.0[i] - BigDigit(1) {
-                    Some(x) => {
-                        temp1 = x;
+                    // println!("{:?}  {:?}", self.0[i], rhs.0[i]);
+                    if borrowed != 0 {
+                        borrowed -= 1;
+
+                        match d1 - BigDigit(1) {
+                            Some(x) => {
+                                temp1 = x;
+                            }
+                            None => {
+                                temp1 = BigDigit(MAX);
+                                borrowed += 1;
+                            }
+                        }
+                    } else {
+                        temp1 = d1;
+                        // temp1 = self.0.get(i..i + 1).unwrap_or(&[BigDigit(0)]);
                     }
-                    None => {
-                        temp1 = BigDigit(MAX);
+
+                    if temp1 < d2 {
                         borrowed += 1;
+                        temp2 = ((BigDigit(MAX) - (d2 - temp1).unwrap()).unwrap() + BigDigit(1)).0;
+                    } else {
+                        temp2 = (temp1 - d2).unwrap();
+                    }
+                    println!("{:?}  {:?}", temp1, temp2);
+
+                    result.0[i] = temp2;
+                }
+
+                if !(borrowed == 0) {
+                    return None;
+                }
+
+                for i in (1..max_len).rev() {
+                    if result.0[i] == BigDigit(0) {
+                        // let v1 = vec![1, 2, 3];
+                        // let r1 = result.0[] ;
+                        result.0.pop();
+                    } else {
+                        break;
                     }
                 }
-            } else {
-                temp1 = self.0[i];
+                return Some(result);
             }
-
-            if temp1 < rhs.0[i] {
-                borrowed += 1;
-                temp2 = (BigDigit(MAX) - (rhs.0[i] - temp1).unwrap()).unwrap();
-            } else {
-                temp2 = (temp1 - rhs.0[i]).unwrap();
-            }
-            println!("{:?}  {:?}", temp1, temp2);
-
-            result.0[i] = temp2;
         }
-
-        if !(borrowed == 0) {
-            return None;
-        }
-
-        return Some(result);
-    }
+    };
 }
+
+sub_for_BigUInt!(BigUInt);
+sub_for_BigUInt!(&BigUInt);
 
 // impl BigUInt {
 //     pub fn convert_to_bc(self) -> String {
@@ -115,23 +137,36 @@ pub enum Operation {
     Minus,
 }
 
-// pub fn test_with_bc(n1: BigUInt, n2: BigUInt, op: Operation) -> bool {
-//     fn call_bc(args: &str) -> String {
-//         let output = Command::new("echo")
-//             .arg(args.to_owned() + "| temp.txt")
-//             .output().and_then(|x| Command::new("bc").args());
-//         String::from("Hi")
-//         // Command::new("bc").arg()
-//     }
-//     call_bc("10 + 20");
-//     true
-// }
-
 #[cfg(test)]
 mod tests {
+    use std::u64::MAX;
 
-    // #[test]
-    // fn test_big_uint() {
-    //     unimplemented!();
-    // }
+    use crate::long::big_uint::{BigDigit, BigUInt};
+
+    #[test]
+    fn test_sub() {
+        let n1: BigUInt = BigUInt(vec![BigDigit(1)]);
+        let n2: BigUInt = BigUInt(vec![BigDigit(2)]);
+        let n3: BigUInt = BigUInt(vec![BigDigit(3)]);
+        let n4: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1)]);
+        let n5: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(2)]);
+        let n6: BigUInt = BigUInt(vec![BigDigit(2), BigDigit(3)]);
+        let n7: BigUInt = BigUInt(vec![BigDigit(2), BigDigit(1)]);
+        let n8: BigUInt = BigUInt(vec![BigDigit(2), BigDigit(1), BigDigit(1)]);
+        let n9: BigUInt = BigUInt(vec![BigDigit(3), BigDigit(2), BigDigit(1)]);
+        let n10: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1), BigDigit(2)]);
+        // let N11: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1), BigDigit(1)]);
+        // let N12: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1), BigDigit(1)]);
+        // let N13: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1), BigDigit(1)]);
+        // let N14: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1), BigDigit(1)]);
+        // let N15: BigUInt = BigUInt(vec![BigDigit(1), BigDigit(1), BigDigit(1)]);
+
+        let res1 = &n2 - &n1;
+        let res2 = &n3 - &n2;
+        let res3 = &n4 - &n3;
+        let res4 = &assert_eq!(res1, Some(BigUInt(vec![BigDigit(1)])));
+        assert_eq!(res2, Some(BigUInt(vec![BigDigit(MAX)])));
+        assert_eq!(res3, Some(BigUInt(vec![BigDigit(0), BigDigit(1)])));
+        // unimplemented!();
+    }
 }
