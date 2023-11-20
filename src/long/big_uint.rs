@@ -125,9 +125,46 @@ macro_rules! sub_for_BigUInt {
 sub_for_BigUInt!(BigUInt);
 sub_for_BigUInt!(&BigUInt);
 
+impl ops::Mul for BigUInt {
+    type Output = BigUInt;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        let mut d1: BigDigit;
+        let mut d2: BigDigit;
+        let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
+        let mut res = BigUInt(vec![BigDigit(0); max_len]);
+
+        for i in (0..max_len - 1) {
+            // d1 =
+            // res +=
+        }
+
+        // for
+        // // for
+        res
+    }
+}
+
 // impl BigUInt {
-//     pub fn convert_to_bc(self) -> String {
+//     pub fn mult_by_digit(self: &Self, d: BigDigit) -> BigUInt {
+//         let len = self.0.len();
+//         let mut temp1: BigDigit;
+//         // let mut temp1: (BigDigit, u64);
+//         let mut temp2: (BigDigit, bool);
+//         let mut res = BigUInt(vec![BigDigit(0); len]);
+//         let mut carry: u128 = 0;
 //
+//         for i in 0..len {
+//             // (temp1, carry) = res.0[i] * d;
+//             // temp2 = temp1.0 + carry;
+//             // carry += temp2.1 as u128;
+//             // res.0[i] = temp2.0;
+//             // (res[i], carry) = (temp.0 + BigDigit(carry))
+//         }
+//
+//         if carry != 0 {}
+//
+//         res
 //     }
 // }
 
