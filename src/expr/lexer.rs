@@ -19,4 +19,8 @@ impl std::iter::Iterator for TokenStream {
     }
 }
 
-// pub fn eat_one(input: String) -> (Option<Token>, String) {}
+pub fn eat_one(input: String) -> (Option<Token>, String) {
+    let mut curr_char: char = ' ';
+    for i in input.chars() {}
+    return (None, String::from(""));
+}
