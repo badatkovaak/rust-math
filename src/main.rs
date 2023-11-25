@@ -5,6 +5,7 @@ pub mod complex_nums;
 pub mod compute;
 pub mod constants;
 pub mod equations;
+pub mod expr;
 pub mod long;
 pub mod matrix;
 pub mod matrix2;
