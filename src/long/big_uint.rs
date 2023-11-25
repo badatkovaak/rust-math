@@ -134,7 +134,7 @@ impl ops::Mul for BigUInt {
         let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
         let mut res = BigUInt(vec![BigDigit(0); max_len]);
 
-        for i in (0..max_len - 1) {
+        for i in 0..max_len - 1 {
             // d1 =
             // res +=
         }

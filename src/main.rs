@@ -17,6 +17,8 @@ pub mod vector;
 pub mod vector_gen;
 
 use matrix::Matrix;
+use nom::bytes::complete::tag;
+use nom::error::Error;
 
 use crate::compute::general::*;
 use crate::constants::{E, LN2};
