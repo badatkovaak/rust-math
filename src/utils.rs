@@ -54,30 +54,59 @@ pub fn factorial_f64(n: u64) -> f64 {
     res
 }
 
+pub fn is_power_of_n<
+    T: std::ops::Div<Output = T> + std::ops::Rem<Output = T> + std::cmp::PartialEq + Copy + From<u8>,
+>(
+    value: T,
+    n: T,
+) -> bool {
+    //
+    let mut res = value;
+    while res % n == T::from(0) {
+        res = res / value;
+    }
+    true
+    // res
+}
+
+pub fn max_of_two<
+    T: std::cmp::PartialOrd
+        + From<bool>
+        + std::ops::Mul<Output = T>
+        + Copy
+        + std::ops::Add<Output = T>,
+>(
+    a: T,
+    b: T,
+) -> T {
+    a * T::from(a >= b) + b * T::from(b > a)
+}
+
 #[inline]
 pub fn fequals(x: f64, y: f64, diff: Option<f64>) -> bool {
     f64::abs(x - y) <= diff.unwrap_or(0.000000001)
 }
 
-macro_rules! max_of_two {
-    ($x:ty, $name:tt) => {
-        pub fn $name(a: $x, b: $x) -> $x {
-            a * ((a >= b) as $x) + b * ((b > a) as $x)
-        }
-    };
-}
-
-max_of_two!(u8, max_of_two_u8);
-max_of_two!(u16, max_of_two_u16);
-max_of_two!(u32, max_of_two_u32);
-max_of_two!(u64, max_of_two_u64);
-max_of_two!(u128, max_of_two_u128);
-max_of_two!(usize, max_of_two_usize);
-
-max_of_two!(i8, max_of_two_i8);
-max_of_two!(i16, max_of_two_i16);
-max_of_two!(i32, max_of_two_i32);
-max_of_two!(i64, max_of_two_i64);
-max_of_two!(i128, max_of_two_i128);
+// macro_rules! max_of_two {
+//     ($x:ty, $name:tt) => {
+//         pub fn $name(a: $x, b: $x) -> $x {
+//             a * ((a >= b) as $x) + b * ((b > a) as $x)
+//         }
+//     };
+// }
+//
+// max_of_two!(u8, max_of_two_u8);
+// max_of_two!(u16, max_of_two_u16);
+// max_of_two!(u32, max_of_two_u32);
+// max_of_two!(u64, max_of_two_u64);
+// max_of_two!(u128, max_of_two_u128);
+// max_of_two!(usize, max_of_two_usize);
+//
+// max_of_two!(i8, max_of_two_i8);
+// max_of_two!(i16, max_of_two_i16);
+// max_of_two!(i32, max_of_two_i32);
+// max_of_two!(i64, max_of_two_i64);
+// max_of_two!(i128, max_of_two_i128);
+// max_of_two!(isize, max_of_two_isize);
 
 // pub fn divmod

@@ -1,4 +1,4 @@
-use crate::{long::big_digit::BigDigit, utils::max_of_two_usize};
+use crate::{long::big_digit::BigDigit, utils::max_of_two};
 use std::cmp;
 use std::cmp::Ordering;
 use std::iter::zip;
@@ -40,7 +40,7 @@ impl ops::Add for BigUInt {
         let mut carry = BigDigit(0);
         let mut temp1: (BigDigit, bool);
         let mut temp2: (BigDigit, bool);
-        let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
+        let max_len = max_of_two(self.0.len(), rhs.0.len());
         let mut result = BigUInt(vec![BigDigit(0); max_len]);
 
         for i in 0..max_len {
@@ -66,7 +66,7 @@ macro_rules! sub_for_BigUInt {
                 let mut temp1: BigDigit;
                 let mut temp2: BigDigit;
 
-                let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
+                let max_len = max_of_two(self.0.len(), rhs.0.len());
 
                 let mut result = BigUInt(vec![BigDigit(0); max_len]);
 
@@ -131,7 +131,7 @@ impl ops::Mul for BigUInt {
     fn mul(self, rhs: Self) -> Self::Output {
         let mut d1: BigDigit;
         let mut d2: BigDigit;
-        let max_len = max_of_two_usize(self.0.len(), rhs.0.len());
+        let max_len = max_of_two(self.0.len(), rhs.0.len());
         let mut res = BigUInt(vec![BigDigit(0); max_len]);
 
         for i in 0..max_len - 1 {
