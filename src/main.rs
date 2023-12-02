@@ -5,11 +5,11 @@ pub mod complex_nums;
 pub mod compute;
 pub mod constants;
 pub mod equations;
-pub mod expr;
 pub mod long;
 pub mod matrix;
 pub mod matrix2;
 pub mod misc;
+pub mod polynom;
 pub mod quaternion;
 pub mod sorting;
 pub mod utils;
@@ -17,8 +17,6 @@ pub mod vector;
 pub mod vector_gen;
 
 use matrix::Matrix;
-use nom::bytes::complete::tag;
-use nom::error::Error;
 
 use crate::compute::general::*;
 use crate::constants::{E, LN2};

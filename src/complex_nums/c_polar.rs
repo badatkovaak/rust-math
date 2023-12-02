@@ -43,3 +43,11 @@ impl CPolar {
         res
     }
 }
+
+pub fn roots_of_unity(n: u64) -> Vec<CPolar> {
+    let mut res = vec![];
+    for i in 0..n {
+        res.push(CPolar(1., (2. * PI * (i as f64)) / (n as f64)));
+    }
+    return res;
+}

@@ -68,4 +68,17 @@ impl CAlgebraic {
     pub fn algebraic_to_polar(self: &Self) -> c_polar::CPolar {
         c_polar::CPolar(self.0 / self.magnitude(), self.1 / self.magnitude())
     }
+
+    pub fn pow(self, e: i64) -> CAlgebraic {
+        let mut res = CAlgebraic(1., 0.);
+
+        if e == 0 {
+            return res;
+        }
+
+        for i in 0..(e.abs() as u64) {
+            res = res * self;
+        }
+        res
+    }
 }
