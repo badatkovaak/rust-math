@@ -5,6 +5,7 @@ pub mod complex_nums;
 pub mod compute;
 pub mod constants;
 pub mod equations;
+pub mod fts;
 pub mod long;
 pub mod matrix;
 pub mod matrix2;
@@ -26,9 +27,10 @@ use crate::constants::{E, LN2};
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
 // use crate::misc;
-use complex_nums::c_algebraic::CAlgebraic;
+use complex_nums::c_algebraic::CAlg;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
+use crate::polynom::{fft_power2, Polynomial};
 
 fn main() {
     println!();
@@ -50,13 +52,34 @@ fn main() {
     // println!("{}", c1 * c2);
     // println!("{}", c1 / c2);
 
-    println!("{}", exp(1.));
-    println!("{}", E);
-    println!("{}", ln1p(0.5));
-    println!("{}", LN2);
-    // println!("{}", ln(2.));
-    println!("{}", ln_app(2.));
-    println!("{}", ln_newton(2.));
+    // println!("{}", exp(1.));
+    // println!("{}", E);
+    // println!("{}", ln1p(0.5));
+    // println!("{}", LN2);
+    // // println!("{}", ln(2.));
+    // println!("{}", ln_app(2.));
+    // println!("{}", ln_newton(2.));
+
+    println!();
+    // println!(
+    //     "{:?}",
+    //     fft_mul(
+    //         Polynomial(vec![CAlg(1., 0.), CAlg(2., 0.), CAlg(3., 0.)]),
+    //         Polynomial(vec![CAlg(2., 0.), CAlg(3., 0.), CAlg(4., 0.)])
+    //     )
+    // );
+    // println!(
+    //     "{:?}",
+    //     helper(vec![CAlg(2., 0.), CAlg(3., 0.), CAlg(4., 0.)], false)
+    // );
+    println!(
+        "{:?}",
+        fft_power2(
+            vec![CAlg(1., 0.), CAlg(2., 0.), CAlg(3., 0.), CAlg(5., 0.)],
+            false
+        )
+    );
+
     // println!(
     //     "{}",
     //     compute::integration::simpsons_rule(0., 2., &(|x| compute::trig::cos(x)))
