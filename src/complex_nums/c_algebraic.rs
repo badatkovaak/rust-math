@@ -1,4 +1,6 @@
 use crate::complex_nums::c_polar;
+use crate::utils::fequals;
+use std::cmp;
 use std::ops;
 
 #[derive(Debug, Clone, Copy)]
@@ -7,6 +9,12 @@ pub struct CAlg(pub f64, pub f64);
 impl std::fmt::Display for CAlg {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} + {}i", self.0, self.1)
+    }
+}
+
+impl cmp::PartialEq for CAlg {
+    fn eq(&self, other: &Self) -> bool {
+        fequals(self.0, other.0, 12) && fequals(self.1, other.1, 12)
     }
 }
 
@@ -29,6 +37,12 @@ impl ops::Add for CAlg {
 
     fn add(self, rhs: Self) -> Self::Output {
         CAlg(self.0 + rhs.0, self.1 + rhs.1)
+    }
+}
+
+impl ops::AddAssign for CAlg {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
     }
 }
 
@@ -135,7 +149,7 @@ impl CAlg {
             return res;
         }
 
-        for i in 0..(e.abs() as u64) {
+        for _ in 0..(e.abs() as u64) {
             res = res * self;
         }
         if e > 0 {
@@ -143,5 +157,9 @@ impl CAlg {
         } else {
             return CAlg(1., 0.) / res;
         }
+    }
+
+    fn to_string(&self) -> String {
+        format!("{} {}i", self.0, self.1)
     }
 }

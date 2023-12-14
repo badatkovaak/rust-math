@@ -82,9 +82,9 @@ pub fn max_of_two<
     a * T::from(a >= b) + b * T::from(b > a)
 }
 
-#[inline]
-pub fn fequals(x: f64, y: f64, diff: Option<f64>) -> bool {
-    f64::abs(x - y) <= diff.unwrap_or(0.000000001)
+// #[inline]
+pub fn fequals(x: f64, y: f64, diff: u64) -> bool {
+    f64::abs(x - y) <= (10.0 as f64).powi(-(diff as i32))
 }
 
 // macro_rules! max_of_two {

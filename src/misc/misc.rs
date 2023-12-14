@@ -1,4 +1,14 @@
-fn partitions_n<T: Copy + PartialEq + Ord>(v: Vec<T>, n: u64) -> Vec<Vec<T>> {
+pub fn flatten<T: Clone>(v: &Vec<Vec<T>>) -> Vec<T> {
+    let mut res = vec![];
+    for i in v.iter() {
+        for j in i.iter() {
+            res.push(j.clone());
+        }
+    }
+    res
+}
+
+pub fn partitions_n<T: Copy + PartialEq + Ord>(v: Vec<T>, n: u64) -> Vec<Vec<T>> {
     match n {
         0 => {
             return vec![vec![]];
@@ -34,7 +44,7 @@ fn partitions_n<T: Copy + PartialEq + Ord>(v: Vec<T>, n: u64) -> Vec<Vec<T>> {
                     xs
                 })
                 .collect();
-            return flatten(vs);
+            return flatten(&vs);
         }
     }
 }

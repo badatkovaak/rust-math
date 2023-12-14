@@ -4,7 +4,7 @@ use std::iter::zip;
 use std::ops;
 use std::slice::{Iter, IterMut};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Matrix(pub Vec<Vec<f64>>);
 
 impl std::fmt::Display for Matrix {
@@ -18,12 +18,6 @@ impl Iterator for Matrix {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.0.iter().next().cloned()
-    }
-}
-
-impl Clone for Matrix {
-    fn clone(&self) -> Self {
-        return Self(self.0.clone());
     }
 }
 
@@ -41,7 +35,7 @@ impl std::cmp::PartialEq for Matrix {
 
         for i in self.0.iter().zip(other.0.iter()) {
             for j in 0..i.0.len() {
-                if !utils::fequals(i.0[j], i.1[j], Some(0.0000000001)) {
+                if !utils::fequals(i.0[j], i.1[j], 10) {
                     return false;
                 }
             }
@@ -132,7 +126,7 @@ impl Matrix {
         (self.0.len(), self.0[0].len())
     }
 
-    pub fn elem_transform_1(self, i: u32, j: u32) -> Matrix {
+    pub fn elem_row_transform_1(self, i: u32, j: u32) -> Matrix {
         let cond = |k, l| {
             let c1 = k == l && k != j && k != i;
             let c2 = k == i && l == j;
@@ -156,7 +150,7 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
-    pub fn elem_transform_2(self, i: u32, m: f64) -> Matrix {
+    pub fn elem_row_transform_2(self, i: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i) {
             (true, true) => m,
             (true, false) => 1.0,
@@ -180,7 +174,7 @@ impl Matrix {
     }
 
     // #[inline]
-    pub fn elem_transform_3(self, i: u32, j: u32, m: f64) -> Matrix {
+    pub fn elem_row_transform_3(self, i: u32, j: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i, l == j) {
             (_, true, true) => m,
             (true, _, _) => 1.0,
@@ -209,7 +203,7 @@ impl Matrix {
         self.iter()
             .map(|x| {
                 x.iter()
-                    .map(|y| (!utils::fequals(*y, 0.0, None) as u64) * 1)
+                    .map(|y| (!utils::fequals(*y, 0.0, 10) as u64) * 1)
                     .sum::<u64>()
             })
             .sum::<u64>()
@@ -227,7 +221,7 @@ impl Matrix {
         let mut i: u32 = 0;
         while res.0[0][0] == 0.0 {
             // println!("{}", i);
-            res = res.elem_transform_1(0, i as u32);
+            res = res.elem_row_transform_1(0, i as u32);
             i += 1;
             if i as usize >= res.0.len() {
                 return self.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
@@ -236,14 +230,14 @@ impl Matrix {
 
         if res.0[0][0] != 1.0 {
             let v = res.0[0][0];
-            res = res.elem_transform_2(0, 1.0 / v);
+            res = res.elem_row_transform_2(0, 1.0 / v);
         }
 
         // println!("{}", res);
         for i in 1..res.0.len() {
             let v = res.0[i][0];
             // println!("{}", v);
-            res = res.elem_transform_3(i as u32, 0, -v);
+            res = res.elem_row_transform_3(i as u32, 0, -v);
         }
         // println!("{}", res);
 
@@ -339,11 +333,11 @@ mod tests {
         // println!("{}", m1);
 
         assert_eq!(
-            m2.elem_transform_1(0, 1),
+            m2.elem_row_transform_1(0, 1),
             Matrix(vec![vec![4., 5., 6.], vec![1., 2., 3.], vec![7., 8., 9.]])
         );
         assert_eq!(
-            m1.elem_transform_1(0, 1),
+            m1.elem_row_transform_1(0, 1),
             Matrix(vec![vec![3., 4.], vec![1., 2.]])
         );
     }

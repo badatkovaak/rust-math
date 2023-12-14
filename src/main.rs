@@ -4,11 +4,12 @@
 pub mod complex_nums;
 pub mod compute;
 pub mod constants;
+pub mod dfts;
 pub mod equations;
-pub mod fts;
 pub mod long;
 pub mod matrix;
 pub mod matrix2;
+pub mod matrix_v2;
 pub mod misc;
 pub mod polynom;
 pub mod quaternion;
@@ -26,11 +27,12 @@ use crate::constants::{E, LN2};
 // use crate::long;
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
+use crate::matrix_v2::MatrixV2;
 // use crate::misc;
 use complex_nums::c_algebraic::CAlg;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
-use crate::polynom::{fft_power2, Polynomial};
+use crate::polynom::Polynomial;
 
 fn main() {
     println!();
@@ -60,7 +62,27 @@ fn main() {
     // println!("{}", ln_app(2.));
     // println!("{}", ln_newton(2.));
 
-    println!();
+    // let m1 = MatrixV2 {
+    //     m: vec![1., 2., 3., 4.],
+    //     dims: (2, 2),
+    // };
+    // let m2 = MatrixV2 {
+    //     m: vec![2., 3., 4., 5.],
+    //     dims: (2, 2),
+    // };
+    // let m3 = MatrixV2 {
+    //     m: vec![1., 2., 3., 4., 5., 6., 7., 8., 9.],
+    //     dims: (3, 3),
+    // };
+    // println!(
+    //     "{:?}\n{:?}\n{:?}\n{:?}\n{:?}",
+    //     (&m1 + &m2).unwrap(),
+    //     (&m1 - &m2).unwrap(),
+    //     (&m1 * &m2).unwrap(),
+    //     m1.clone().make_into_step_form(),
+    //     m3.clone().make_into_step_form()
+    // );
+
     // println!(
     //     "{:?}",
     //     fft_mul(
@@ -72,13 +94,13 @@ fn main() {
     //     "{:?}",
     //     helper(vec![CAlg(2., 0.), CAlg(3., 0.), CAlg(4., 0.)], false)
     // );
-    println!(
-        "{:?}",
-        fft_power2(
-            vec![CAlg(1., 0.), CAlg(2., 0.), CAlg(3., 0.), CAlg(5., 0.)],
-            false
-        )
-    );
+    // println!(
+    // "{:?}",
+    // fft_power2(
+    //     vec![CAlg(1., 0.), CAlg(2., 0.), CAlg(3., 0.), CAlg(5., 0.)],
+    //     false
+    // )
+    // );
 
     // println!(
     //     "{}",

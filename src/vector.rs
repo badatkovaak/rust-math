@@ -1,5 +1,5 @@
 // use mymath::utils;
-
+use crate::utils;
 use std::ops;
 use std::slice;
 
@@ -70,7 +70,7 @@ impl Vector {
     }
 
     pub fn normalize(self: &Self) -> Vector {
-        Self::scalar_mult(self, crate::utils::one_over_sqrt(self.get_length()))
+        Self::scalar_mult(self, utils::one_over_sqrt(self.get_length()))
     }
 }
 
