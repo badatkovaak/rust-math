@@ -83,13 +83,9 @@ fn main() {
     //     m3.clone().make_into_step_form()
     // );
 
-    // println!(
-    //     "{:?}",
-    //     fft_mul(
-    //         Polynomial(vec![CAlg(1., 0.), CAlg(2., 0.), CAlg(3., 0.)]),
-    //         Polynomial(vec![CAlg(2., 0.), CAlg(3., 0.), CAlg(4., 0.)])
-    //     )
-    // );
+    let p1 = Polynomial(vec![CAlg(3., 0.), CAlg(2., 0.), CAlg(1., 0.)]);
+    let p2 = Polynomial(vec![CAlg(2., 0.), CAlg(1., 0.)]);
+    println!("{:?}", p1 - p2);
     // println!(
     //     "{:?}",
     //     helper(vec![CAlg(2., 0.), CAlg(3., 0.), CAlg(4., 0.)], false)

@@ -14,7 +14,7 @@ impl std::fmt::Display for CAlg {
 
 impl cmp::PartialEq for CAlg {
     fn eq(&self, other: &Self) -> bool {
-        fequals(self.0, other.0, 12) && fequals(self.1, other.1, 12)
+        fequals(self.0, other.0, 13) && fequals(self.1, other.1, 13)
     }
 }
 
