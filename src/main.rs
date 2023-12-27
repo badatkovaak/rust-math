@@ -1,17 +1,15 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+pub mod algebra;
 pub mod complex_nums;
 pub mod compute;
 pub mod constants;
 pub mod dfts;
-pub mod equations;
 pub mod long;
 pub mod matrix;
-pub mod matrix2;
 pub mod matrix_v2;
 pub mod misc;
-pub mod polynom;
 pub mod quaternion;
 pub mod sorting;
 pub mod utils;

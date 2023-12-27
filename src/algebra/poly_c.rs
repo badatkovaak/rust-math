@@ -1,5 +1,5 @@
 #[derive(Debug, Clone)]
-pub struct PolyR(pub Vec<CAlg>);
+pub struct PolyC(pub Vec<CAlg>);
 
 use crate::constants::PI;
 use crate::utils::{self, fequals, is_power_of_n};
@@ -9,26 +9,26 @@ use std::ops;
 use crate::complex_nums::c_algebraic::CAlg;
 use crate::utils::max_of_two;
 
-impl std::fmt::Display for PolyR {
+impl std::fmt::Display for PolyC {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.into_string())
     }
 }
 
-impl ops::Neg for PolyR {
+impl ops::Neg for PolyC {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        PolyR(self.0.iter().map(|x| -x).collect::<Vec<CAlg>>())
+        PolyC(self.0.iter().map(|x| -x).collect::<Vec<CAlg>>())
     }
 }
 
-impl ops::Add for PolyR {
+impl ops::Add for PolyC {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
         if self.len() == rhs.len() {
-            return PolyR(zip(self.0, rhs.0).map(|(x, y)| x + y).collect());
+            return PolyC(zip(self.0, rhs.0).map(|(x, y)| x + y).collect());
         }
 
         let mlen = max_of_two(self.len(), rhs.len());
@@ -49,11 +49,11 @@ impl ops::Add for PolyR {
             op1 = self.0.clone();
         }
 
-        PolyR(zip(op1, op2).map(|(x, y)| x + y).collect()).prettify()
+        PolyC(zip(op1, op2).map(|(x, y)| x + y).collect()).prettify()
     }
 }
 
-impl ops::Sub for PolyR {
+impl ops::Sub for PolyC {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -61,8 +61,8 @@ impl ops::Sub for PolyR {
     }
 }
 
-impl ops::Mul for PolyR {
-    type Output = PolyR;
+impl ops::Mul for PolyC {
+    type Output = PolyC;
 
     fn mul(self, rhs: Self) -> Self::Output {
         let mut res = vec![CAlg(0., 0.); self.len() + rhs.len()];
@@ -77,19 +77,19 @@ impl ops::Mul for PolyR {
         } {
             res.pop();
         }
-        PolyR(res).prettify()
+        PolyC(res).prettify()
     }
 }
 
-impl ops::Div for PolyR {
-    type Output = (PolyR, PolyR);
+impl ops::Div for PolyC {
+    type Output = (PolyC, PolyC);
 
     fn div(self, rhs: Self) -> Self::Output {
         // println!("{:?}\n{:?}", self, rhs);
 
         if self.len() < rhs.len() {
             // println!("hi");
-            return (PolyR(vec![CAlg(0., 0.)]), self);
+            return (PolyC(vec![CAlg(0., 0.)]), self);
         }
 
         let p1 = self.0.clone();
@@ -102,7 +102,7 @@ impl ops::Div for PolyR {
             count += 1;
         }
 
-        let mut q = PolyR(vec![CAlg(0., 0.); count]);
+        let mut q = PolyC(vec![CAlg(0., 0.); count]);
         // let r = Polynomial(vec![]);
 
         let (c1, c2) = (p1.last().unwrap(), p2.last().unwrap());
@@ -115,7 +115,7 @@ impl ops::Div for PolyR {
 
         q.0.push(c1 / c2);
 
-        let r = PolyR(p1) - PolyR(p3);
+        let r = PolyC(p1) - PolyC(p3);
         let (a, b) = r.clone().strip_zeros() / rhs.clone();
         // println!("self: {}\nrhs: {}", self, rhs);
         // println!("q: {}\nr: {}", q, r);
@@ -127,7 +127,7 @@ impl ops::Div for PolyR {
     }
 }
 
-impl PolyR {
+impl PolyC {
     fn into_string(&self) -> String {
         let mut res = String::new();
         for (i, v) in self.0.iter().enumerate().rev() {
@@ -193,9 +193,9 @@ impl PolyR {
     }
 }
 
-pub fn gcd(p1: PolyR, p2: PolyR) -> PolyR {
-    let mut a: PolyR;
-    let mut b: PolyR;
+pub fn gcd(p1: PolyC, p2: PolyC) -> PolyC {
+    let mut a: PolyC;
+    let mut b: PolyC;
 
     if p1.len() > p2.len() {
         (a, b) = (p1, p2);
@@ -218,7 +218,7 @@ pub fn gcd(p1: PolyR, p2: PolyR) -> PolyR {
     } else if b.len() == 1 {
         return b;
     } else {
-        return PolyR(vec![CAlg(0., 0.)]);
+        return PolyC(vec![CAlg(0., 0.)]);
     }
 }
 
