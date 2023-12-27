@@ -29,7 +29,7 @@ impl ops::Neg for Vector {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        self.scalar_mult(-1.0)
+        self.scalar_mult(-1.)
     }
 }
 
@@ -60,7 +60,7 @@ impl Vector {
     pub fn scalar_mult(self: &Self, s: f64) -> Vector {
         let mut result: Vec<f64> = Vec::new();
         for item in self.iter() {
-            result.push(item * s as f64);
+            result.push(item * &s);
         }
         Vector(result)
     }
