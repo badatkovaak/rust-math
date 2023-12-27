@@ -132,7 +132,7 @@ impl ops::Mul for BigUInt {
         let mut d1: BigDigit;
         let mut d2: BigDigit;
         let max_len = max_of_two(self.0.len(), rhs.0.len());
-        let mut res = BigUInt(vec![BigDigit(0); max_len]);
+        let res = BigUInt(vec![BigDigit(0); max_len]);
 
         for i in 0..max_len - 1 {
             // d1 =

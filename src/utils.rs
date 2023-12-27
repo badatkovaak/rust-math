@@ -31,10 +31,33 @@ pub fn sqrt_force(n: f64) -> f64 {
 pub fn agm(x: f64, y: f64) -> f64 {
     let mut a = x;
     let mut b = y;
-    for _i in 0..20 {
+    for _ in 0..20 {
         (a, b) = ((a + b) / 2., f64::sqrt(a * b));
     }
     (a + b) / 2.
+}
+
+pub fn gcd_euclid(x: u64, y: u64) -> u64 {
+    let mut a;
+    let mut b;
+
+    if x > y {
+        (a, b) = (x, y);
+    } else if y > x {
+        (a, b) = (y, x);
+    } else {
+        return 1;
+    }
+
+    while a != 0 && b != 0 {
+        (a, b) = (b, a % b);
+    }
+
+    if a == 0 {
+        return b;
+    } else {
+        return a;
+    }
 }
 
 pub fn factorial(n: u64) -> u64 {

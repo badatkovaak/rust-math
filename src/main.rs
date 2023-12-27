@@ -32,7 +32,7 @@ use crate::matrix_v2::MatrixV2;
 use complex_nums::c_algebraic::CAlg;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
-use crate::polynom::Polynomial;
+use crate::polynom::{gcd, PolyR};
 
 fn main() {
     println!();
@@ -83,9 +83,24 @@ fn main() {
     //     m3.clone().make_into_step_form()
     // );
 
-    let p1 = Polynomial(vec![CAlg(3., 0.), CAlg(2., 0.), CAlg(1., 0.)]);
-    let p2 = Polynomial(vec![CAlg(2., 0.), CAlg(1., 0.)]);
-    println!("{:?}", p1 - p2);
+    // let p1 = Polynomial(vec![
+    //     CAlg(5., 0.),
+    //     CAlg(6., 0.),
+    //     CAlg(7., 0.),
+    //     CAlg(4., 0.),
+    //     CAlg(1., 0.),
+    // ]);
+    // let p1 = Polynomial(vec![CAlg(4., 0.), CAlg(3., 0.), CAlg(4., 0.), CAlg(1., 0.)]);
+    // let p1 = Polynomial(vec![CAlg(4., 0.), CAlg(3., 0.), CAlg(3., 0.)]);
+    // let p2 = Polynomial(vec![CAlg(0., 0.), CAlg(1., 0.), CAlg(1., 0.)]);
+    // let (p3, p4) = p1.clone() / p2.clone();
+    // println!("{}", p2 + Polynomial(vec![CAlg(10., 0.)]));
+    // println!("{}\n{}", p3, p4);
+
+    let p1 = PolyR(vec![CAlg(6., 0.), CAlg(7., 0.), CAlg(1., 0.)]);
+    let p2 = PolyR(vec![CAlg(-6., 0.), CAlg(-5., 0.), CAlg(1., 0.)]);
+    println!("{}", gcd(p1, p2));
+
     // println!(
     //     "{:?}",
     //     helper(vec![CAlg(2., 0.), CAlg(3., 0.), CAlg(4., 0.)], false)

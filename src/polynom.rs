@@ -1,5 +1,5 @@
 #[derive(Debug, Clone)]
-pub struct Polynomial(pub Vec<CAlg>);
+pub struct PolyR(pub Vec<CAlg>);
 
 use crate::constants::PI;
 use crate::utils::{self, fequals, is_power_of_n};
@@ -9,60 +9,65 @@ use std::ops;
 use crate::complex_nums::c_algebraic::CAlg;
 use crate::utils::max_of_two;
 
-impl ops::Neg for Polynomial {
-    type Output = Self;
-
-    fn neg(self) -> Self::Output {
-        Polynomial(self.0.iter().map(|x| -x).collect::<Vec<CAlg>>())
+impl std::fmt::Display for PolyR {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.into_string())
     }
 }
 
-impl ops::Add for Polynomial {
+impl ops::Neg for PolyR {
+    type Output = Self;
+
+    fn neg(self) -> Self::Output {
+        PolyR(self.0.iter().map(|x| -x).collect::<Vec<CAlg>>())
+    }
+}
+
+impl ops::Add for PolyR {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        if self.0.len() == rhs.0.len() {
-            return Polynomial(zip(self.0, rhs.0).map(|(x, y)| x + y).collect());
+        if self.len() == rhs.len() {
+            return PolyR(zip(self.0, rhs.0).map(|(x, y)| x + y).collect());
         }
 
-        let mlen = max_of_two(self.0.len(), rhs.0.len());
+        let mlen = max_of_two(self.len(), rhs.len());
         let mut op1: Vec<CAlg>;
         let mut op2: Vec<CAlg>;
 
-        if self.0.len() < mlen {
+        if self.len() < mlen {
             op1 = self.0.clone();
             while op1.len() < mlen {
                 op1.push(CAlg(0., 0.));
             }
             op2 = rhs.0.clone();
         } else {
-            op2 = self.0.clone();
+            op2 = rhs.0.clone();
             while op2.len() < mlen {
                 op2.push(CAlg(0., 0.));
             }
             op1 = self.0.clone();
         }
 
-        Polynomial(zip(op1, op2).map(|(x, y)| x + y).collect()).prettify()
+        PolyR(zip(op1, op2).map(|(x, y)| x + y).collect()).prettify()
     }
 }
 
-impl ops::Sub for Polynomial {
+impl ops::Sub for PolyR {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        println!("{:?}\n{:?}", self, rhs);
         self + (-rhs)
     }
 }
 
-impl ops::Mul for Polynomial {
-    type Output = Polynomial;
+impl ops::Mul for PolyR {
+    type Output = PolyR;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        let mut res = vec![CAlg(0., 0.); self.0.len() + rhs.0.len()];
-        for i in 0..self.0.len() {
-            for j in 0..rhs.0.len() {
+        let mut res = vec![CAlg(0., 0.); self.len() + rhs.len()];
+        for i in 0..self.len() {
+            for j in 0..rhs.len() {
                 res[i + j] += self.0[i] * rhs.0[j];
             }
         }
@@ -72,31 +77,32 @@ impl ops::Mul for Polynomial {
         } {
             res.pop();
         }
-        Polynomial(res).prettify()
+        PolyR(res).prettify()
     }
 }
 
-impl ops::Div for Polynomial {
-    type Output = (Polynomial, Polynomial);
+impl ops::Div for PolyR {
+    type Output = (PolyR, PolyR);
 
     fn div(self, rhs: Self) -> Self::Output {
-        println!("{:?}\n{:?}", self, rhs);
+        // println!("{:?}\n{:?}", self, rhs);
 
-        if self.0.len() < rhs.0.len() {
-            return (Polynomial(vec![]), self);
+        if self.len() < rhs.len() {
+            // println!("hi");
+            return (PolyR(vec![CAlg(0., 0.)]), self);
         }
 
-        let mut p1 = self.0.clone();
-        let p2 = rhs.0.clone();
+        let p1 = self.0.clone();
+        let mut p2 = rhs.0.clone();
         let p3: Vec<CAlg>;
         let mut count = 0;
 
-        while self.0.len() > rhs.0.len() {
-            p1.insert(0, CAlg(0., 0.));
+        while p1.len() > p2.len() {
+            p2.insert(0, CAlg(0., 0.));
             count += 1;
         }
 
-        let mut q = Polynomial(vec![CAlg(0., 0.); count]);
+        let mut q = PolyR(vec![CAlg(0., 0.); count]);
         // let r = Polynomial(vec![]);
 
         let (c1, c2) = (p1.last().unwrap(), p2.last().unwrap());
@@ -109,23 +115,38 @@ impl ops::Div for Polynomial {
 
         q.0.push(c1 / c2);
 
-        let r = Polynomial(p1) - Polynomial(p3);
-        // let a = r / rhs;
-        println!("Hi");
-
-        // (q + a.0, a.1)
-        (q.prettify(), r.prettify())
-        // (fuse_together(, v2)q, r)
+        let r = PolyR(p1) - PolyR(p3);
+        let (a, b) = r.clone().strip_zeros() / rhs.clone();
+        // println!("self: {}\nrhs: {}", self, rhs);
+        // println!("q: {}\nr: {}", q, r);
+        // println!("a: {}\nb: {}", a, b);
+        // println!("c: {}", c);
+        // println!();
+        ((q + a).prettify(), b.prettify())
+        // (q.prettify(), r.prettify())
     }
 }
 
-impl Polynomial {
-    fn to_string(&self) -> String {
+impl PolyR {
+    fn into_string(&self) -> String {
         let mut res = String::new();
-        for (i, v) in self.0.iter().enumerate() {
-            res.extend(format!("{}x^{} ", v, i).chars());
+        for (i, v) in self.0.iter().enumerate().rev() {
+            if self.len() == 1 {
+                res.extend(format!("({})", v).chars());
+            } else if i != 0 && *v != CAlg(0., 0.) {
+                res.extend(format!("({})x^{} + ", v, i).chars());
+            } else if i == 0 && *v != CAlg(0., 0.) {
+                res.extend(format!("({})", v).chars());
+            }
         }
-        res.pop();
+        if res.len() > 2 {
+            if let Some(c) = res.get(res.len() - 2..res.len() - 1) {
+                if c.chars().nth(0) == Some('+') {
+                    res.pop();
+                    res.pop();
+                }
+            }
+        }
         res
     }
 
@@ -145,7 +166,7 @@ impl Polynomial {
 
     fn strip_zeros(mut self) -> Self {
         while let Some(&c) = self.0.last() {
-            if c == CAlg(0., 0.) {
+            if c == CAlg(0., 0.) && self.len() > 1 {
                 self.0.pop();
             } else {
                 break;
@@ -156,7 +177,7 @@ impl Polynomial {
 
     fn normalize(mut self) -> Self {
         if let Some(&c) = self.0.last() {
-            if c != CAlg(1., 0.) && c != CAlg(0., 0.) {
+            if c != CAlg(1., 0.) && c != CAlg(0., 0.) && self.len() > 0 {
                 self.scale_by(CAlg(1., 0.) / c);
             }
         }
@@ -164,8 +185,40 @@ impl Polynomial {
     }
 
     fn prettify(self) -> Self {
-        println!("{:?}", self);
         self.strip_zeros().normalize()
+    }
+
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+}
+
+pub fn gcd(p1: PolyR, p2: PolyR) -> PolyR {
+    let mut a: PolyR;
+    let mut b: PolyR;
+
+    if p1.len() > p2.len() {
+        (a, b) = (p1, p2);
+    } else {
+        (a, b) = (p2, p1);
+    }
+
+    while a.len() > 1 && b.len() > 1 {
+        (a, b) = (b.clone(), (a / b).1);
+        println!("a: {}, b: {}", a, b);
+    }
+    // println!("a: {}, b: {:?}", a, b);
+
+    if a.len() == 1 && a.0[0] == CAlg(0., 0.) {
+        return b;
+    } else if b.len() == 1 && b.0[0] == CAlg(0., 0.) {
+        return a;
+    } else if a.len() == 1 {
+        return a;
+    } else if b.len() == 1 {
+        return b;
+    } else {
+        return PolyR(vec![CAlg(0., 0.)]);
     }
 }
 
