@@ -87,9 +87,9 @@ pub fn insertion_sort<T: Ord + Copy + std::fmt::Debug>(v: &Vec<T>) -> Vec<T> {
 
     let mut res = v.to_vec();
     for i in 1..res.len() {
-        println!("main iter");
+        // println!("main iter");
         binary_insert(&mut res, i - 1, i);
-        println!("{:?}\n", res);
+        // println!("{:?}\n", res);
     }
     res
 }

@@ -2,19 +2,18 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
 pub mod algebra;
-pub mod compute;
 pub mod constants;
-pub mod dfts;
+pub mod cs;
 pub mod linear_algebra;
 pub mod long;
 pub mod misc;
-pub mod sorting;
+pub mod numeric;
 pub mod utils;
 
 use linear_algebra::matrix::Matrix;
 
-use crate::compute::general::*;
 use crate::constants::{E, LN2};
+use crate::numeric::general::*;
 // use crate::complex_nums;
 // use crate::compute;
 // use crate::long;
