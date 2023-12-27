@@ -6,7 +6,7 @@ use crate::utils::{self, fequals, is_power_of_n};
 use std::iter::zip;
 use std::ops;
 
-use crate::complex_nums::c_algebraic::CAlg;
+use crate::algebra::c_algebraic::CAlg;
 use crate::utils::max_of_two;
 
 impl std::fmt::Display for PolyC {
@@ -240,5 +240,4 @@ pub fn fuse_together(v1: &Vec<CAlg>, v2: &Vec<CAlg>) -> Vec<CAlg> {
         panic!();
     }
     zip(v1, v2).map(|(x, y)| x + y).collect::<Vec<CAlg>>()
-    // let res = zip()
 }

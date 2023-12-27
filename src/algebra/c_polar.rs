@@ -1,7 +1,7 @@
 #[derive(Debug, Clone, Copy)]
 pub struct CPolar(pub f64, pub f64);
 
-use crate::{complex_nums::c_algebraic, constants::PI};
+use crate::{algebra::c_algebraic, constants::PI};
 use std::ops;
 
 impl ops::Neg for CPolar {

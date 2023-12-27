@@ -1,4 +1,4 @@
-use crate::complex_nums::c_polar;
+use crate::algebra::c_polar;
 use crate::utils::fequals;
 use std::cmp;
 use std::ops;

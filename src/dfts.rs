@@ -1,4 +1,4 @@
-use crate::complex_nums::c_algebraic::CAlg;
+use crate::algebra::c_algebraic::CAlg;
 use crate::constants::PI;
 use crate::utils::is_power_of_n;
 

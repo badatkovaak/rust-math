@@ -1,12 +1,11 @@
-use crate::algebra::c_algebraic::CAlg;
-use crate::utils;
+use crate::utils::{self, fequals};
 use std::cmp::Ordering;
 use std::iter::zip;
 use std::ops;
 use std::slice::{Iter, IterMut};
 
 #[derive(Debug, Clone)]
-pub struct Matrix(pub Vec<Vec<CAlg>>);
+pub struct Matrix(pub Vec<Vec<f64>>);
 
 impl std::fmt::Display for Matrix {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -15,15 +14,15 @@ impl std::fmt::Display for Matrix {
 }
 
 impl Iterator for Matrix {
-    type Item = Vec<CAlg>;
+    type Item = Vec<f64>;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.0.iter().next().cloned()
     }
 }
 
-impl FromIterator<Vec<CAlg>> for Matrix {
-    fn from_iter<T: IntoIterator<Item = Vec<CAlg>>>(iter: T) -> Self {
+impl FromIterator<Vec<f64>> for Matrix {
+    fn from_iter<T: IntoIterator<Item = Vec<f64>>>(iter: T) -> Self {
         Self(Vec::from_iter(iter))
     }
 }
@@ -50,7 +49,7 @@ impl ops::Neg for Matrix {
     type Output = Matrix;
 
     fn neg(self) -> Self::Output {
-        self.scalar_mult(CAlg(-1., 0.))
+        self.scalar_mult(-1.)
     }
 }
 
@@ -83,7 +82,7 @@ impl ops::Mul for Matrix {
         if self.0[0].len() != rhs.0.len() {
             return None;
         }
-        let mut res = vec![vec![CAlg(0., 0.); self.0.len()]; rhs.0[0].len()];
+        let mut res = vec![vec![0.; self.0.len()]; rhs.0[0].len()];
         for i in 0..self.0.len() {
             for k in 0..rhs.0[0].len() {
                 for j in 0..rhs.0.len() {
@@ -96,11 +95,11 @@ impl ops::Mul for Matrix {
 }
 
 impl Matrix {
-    pub fn iter(&self) -> Iter<'_, Vec<CAlg>> {
+    pub fn iter(&self) -> Iter<'_, Vec<f64>> {
         self.0.iter()
     }
 
-    pub fn iter_mut(&mut self) -> IterMut<'_, Vec<CAlg>> {
+    pub fn iter_mut(&mut self) -> IterMut<'_, Vec<f64>> {
         self.0.iter_mut()
     }
 
@@ -108,7 +107,7 @@ impl Matrix {
         Self(self.0.to_vec())
     }
 
-    pub fn scalar_mult(self, s: CAlg) -> Matrix {
+    pub fn scalar_mult(self, s: f64) -> Matrix {
         self.iter()
             .map(|x| x.iter().map(|y| y * &s).collect())
             .collect()
@@ -127,7 +126,7 @@ impl Matrix {
         (self.0.len(), self.0[0].len())
     }
 
-    pub fn elem_row_transform_1(self, i: u32, j: u32) -> Matrix {
+    pub fn elem_tr_1(self, i: u32, j: u32) -> Matrix {
         let cond = |k, l| {
             let c1 = k == l && k != j && k != i;
             let c2 = k == i && l == j;
@@ -136,13 +135,13 @@ impl Matrix {
         };
         let dims = self.get_dimensions();
         let elem_matrix: Matrix = Matrix(
-            vec![vec![CAlg(0., 0.); dims.1]; dims.0]
+            vec![vec![0.; dims.1]; dims.0]
                 .iter_mut()
                 .enumerate()
                 .map(|(k, z)| {
                     z.iter()
                         .enumerate()
-                        .map(|(l, v)| v + &CAlg(cond(k as u32, l as u32) as f64, 0.))
+                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
                         .collect()
                 })
                 .collect(),
@@ -151,21 +150,21 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
-    pub fn elem_row_transform_2(self, i: u32, m: CAlg) -> Matrix {
+    pub fn elem_tr_2(self, i: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i) {
             (true, true) => m,
-            (true, false) => CAlg(1., 0.),
-            (false, _) => CAlg(0., 0.),
+            (true, false) => 1.,
+            (false, _) => 0.,
         };
         let dims = self.get_dimensions();
         let elem_matrix: Matrix = Matrix(
-            vec![vec![CAlg(0., 0.); dims.1]; dims.0]
+            vec![vec![0.; dims.1]; dims.0]
                 .iter_mut()
                 .enumerate()
                 .map(|(k, z)| {
                     z.iter()
                         .enumerate()
-                        .map(|(l, v)| v + &cond(k as u32, l as u32))
+                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
                         .collect()
                 })
                 .collect(),
@@ -175,21 +174,21 @@ impl Matrix {
     }
 
     // #[inline]
-    pub fn elem_row_transform_3(self, i: u32, j: u32, m: CAlg) -> Matrix {
+    pub fn elem_tr_3(self, i: u32, j: u32, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i, l == j) {
             (_, true, true) => m,
-            (true, _, _) => CAlg(1., 0.),
-            (_, _, _) => CAlg(0., 0.),
+            (true, _, _) => 1.,
+            (_, _, _) => 0.,
         };
         let dims = self.get_dimensions();
         let elem_matrix: Matrix = Matrix(
-            vec![vec![CAlg(0., 0.); dims.1]; dims.0]
+            vec![vec![0.; dims.1]; dims.0]
                 .iter_mut()
                 .enumerate()
                 .map(|(k, z)| {
                     z.iter()
                         .enumerate()
-                        .map(|(l, v)| v + &cond(k as u32, l as u32))
+                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
                         .collect()
                 })
                 .collect(),
@@ -200,17 +199,17 @@ impl Matrix {
 
     // #[inline]
     pub fn count_elems(self: &Matrix) -> u64 {
-        println!("{}", self);
+        // println!("{}", self);
         self.iter()
             .map(|x| {
                 x.iter()
-                    .map(|y| ((*y != CAlg(0., 0.)) as u64) * 1)
+                    .map(|y| (!fequals(*y, 0., 12) as u64) * 1)
                     .sum::<u64>()
             })
             .sum::<u64>()
     }
 
-    pub fn make_into_step_form(&mut self) -> Matrix {
+    pub fn make_into_step_form(&self) -> Matrix {
         if self.count_elems() <= 1 {
             return self.clone();
         }
@@ -220,25 +219,62 @@ impl Matrix {
         // println!("{}", res);
 
         let mut i: u32 = 0;
-        while res.0[0][0] == CAlg(0., 0.) {
+        while res.0[0][0] == 0. {
             // println!("{}", i);
-            res = res.elem_row_transform_1(0, i as u32);
+            res = res.elem_tr_1(0, i as u32);
             i += 1;
             if i as usize >= res.0.len() {
-                return self.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
+                return res.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
             }
         }
 
-        if res.0[0][0] != CAlg(1., 1.) {
+        if !fequals(res.0[0][0], 1., 12) {
             let v = res.0[0][0];
-            res = res.elem_row_transform_2(0, CAlg(1., 0.) / v);
+            res = res.elem_tr_2(0, 1. / v);
         }
 
         // println!("{}", res);
         for i in 1..res.0.len() {
             let v = res.0[i][0];
             // println!("{}", v);
-            res = res.elem_row_transform_3(i as u32, 0, -v);
+            res = res.elem_tr_3(i as u32, 0, -v);
+        }
+        // println!("{}", res);
+
+        return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
+
+        // return get_id_matrix(3);
+    }
+
+    pub fn inverse(&mut self) -> Matrix {
+        if self.count_elems() <= 1 {
+            return self.clone();
+        }
+
+        let mut res = self.clone();
+
+        // println!("{}", res);
+
+        let mut i: u32 = 0;
+        while res.0[0][0] == 0. {
+            // println!("{}", i);
+            res = res.elem_tr_1(0, i as u32);
+            i += 1;
+            if i as usize >= res.0.len() {
+                return res.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
+            }
+        }
+
+        if !fequals(res.0[0][0], 1., 12) {
+            let v = res.0[0][0];
+            res = res.elem_tr_2(0, 1. / v);
+        }
+
+        // println!("{}", res);
+        for i in 1..res.0.len() {
+            let v = res.0[i][0];
+            // println!("{}", v);
+            res = res.elem_tr_3(i as u32, 0, -v);
         }
         // println!("{}", res);
 
@@ -261,13 +297,13 @@ impl Matrix {
     pub fn cut(&self, rows: u32, columns: u32) -> Matrix {
         let mut res = self.clone();
         for _ in 0..rows {
-            res.0.push(vec![CAlg(0., 0.); res.0[0].len()]);
+            res.0.push(vec![0.; res.0[0].len()]);
             res.0.remove(0);
         }
         for i in 0..res.0.len() {
             for _ in 0..columns {
                 res.0[i].remove(0);
-                res.0[i].push(CAlg(0., 0.));
+                res.0[i].push(0.);
             }
         }
         res
@@ -285,7 +321,7 @@ impl Matrix {
         self
     }
 
-    pub fn append_row(mut self, row: Vec<CAlg>) -> Matrix {
+    pub fn append_row(mut self, row: Vec<f64>) -> Matrix {
         for i in 0..row.len() {
             self.0[i].push(row[i]);
         }
@@ -305,14 +341,14 @@ impl Matrix {
 }
 
 pub fn get_id_matrix(dim: u32) -> Matrix {
-    let mut res = vec![vec![CAlg(0., 0.); dim as usize]; dim as usize];
+    let mut res = vec![vec![0.; dim as usize]; dim as usize];
     for i in 0..dim {
-        res[i as usize][i as usize] = CAlg(1., 0.);
+        res[i as usize][i as usize] = 1.;
     }
     return Matrix(res);
 }
 
-pub fn scalar_to_matrix(value: CAlg, dim: u32) -> Matrix {
+pub fn scalar_to_matrix(value: f64, dim: u32) -> Matrix {
     get_id_matrix(dim).scalar_mult(value)
 }
 

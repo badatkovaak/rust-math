@@ -2,35 +2,30 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
 pub mod algebra;
-pub mod complex_nums;
 pub mod compute;
 pub mod constants;
 pub mod dfts;
+pub mod linear_algebra;
 pub mod long;
-pub mod matrix;
-pub mod matrix_v2;
 pub mod misc;
-pub mod quaternion;
 pub mod sorting;
 pub mod utils;
-pub mod vector;
-pub mod vector_gen;
 
-use matrix::Matrix;
+use linear_algebra::matrix::Matrix;
 
 use crate::compute::general::*;
 use crate::constants::{E, LN2};
 // use crate::complex_nums;
 // use crate::compute;
 // use crate::long;
+use crate::linear_algebra::matrix_v2::MatrixV2;
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
-use crate::matrix_v2::MatrixV2;
 // use crate::misc;
-use complex_nums::c_algebraic::CAlg;
+use algebra::c_algebraic::CAlg;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
-use crate::polynom::{gcd, PolyR};
+use algebra::poly_c::{gcd, PolyC};
 
 fn main() {
     println!();
@@ -38,11 +33,19 @@ fn main() {
     // let vec2: Vec<f64> = vec![4., 5., 6.];
     // let vec12 = vector::add(&vec1, &vec2);
 
-    // let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
-    // let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+    let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+    let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
     // let mut m3 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
+    println!(
+        "{}\n{}\n{}\n{}\n{}",
+        (m1.clone() + m2.clone()),
+        (m1.clone() - m2.clone()),
+        (m1.clone() * m2.clone()).unwrap(),
+        m1.clone().make_into_step_form(),
+        m2.clone().make_into_step_form()
+    );
 
     // let c1 = CAlgebraic(1., 1.);
     // let c2 = CAlgebraic(-1., 1.);
@@ -95,9 +98,9 @@ fn main() {
     // println!("{}", p2 + Polynomial(vec![CAlg(10., 0.)]));
     // println!("{}\n{}", p3, p4);
 
-    let p1 = PolyR(vec![CAlg(6., 0.), CAlg(7., 0.), CAlg(1., 0.)]);
-    let p2 = PolyR(vec![CAlg(-6., 0.), CAlg(-5., 0.), CAlg(1., 0.)]);
-    println!("{}", gcd(p1, p2));
+    // let p1 = PolyC(vec![CAlg(6., 0.), CAlg(7., 0.), CAlg(1., 0.)]);
+    // let p2 = PolyC(vec![CAlg(-6., 0.), CAlg(-5., 0.), CAlg(1., 0.)]);
+    // println!("{}", gcd(p1, p2));
 
     // println!(
     //     "{:?}",
