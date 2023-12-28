@@ -1,10 +1,33 @@
-discrete fourier transform
-fast fourier transform
-discrete cosine transform
-symbolic differentiation
-symbolic integration
-determinant
-QR decomposition
-LU decomposition
-Solving systems of linear equations
-matrix inverses
+Computer Science:
+    huffman encoding/decoding
+
+Signal Processing:
+    discrete fourier transform
+    fast fourier transform
+    discrete cosine transform
+    
+Calculus:
+    symbolic differentiation
+    symbolic integration
+    
+Linear Algebra:
+    determinant
+    QR decomposition
+    LU decomposition
+    Solving systems of linear equations
+    matrix inverses
+
+Geometry:
+    3d utils
+    GJK alg
+
+Graphics:
+    marching squares
+    marching cudes
+
+Images:
+    qoi suite
+    qoi <=> png
+    tiff reader
+    png suite ?
+    jpeg suite ??

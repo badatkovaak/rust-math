@@ -1,4 +1,4 @@
-pub fn to_chunks<T>(v: Vec<T>, n: usize) -> Vec<Vec<T>> {
+pub fn vec_to_chunks<T>(v: Vec<T>, n: usize) -> Vec<Vec<T>> {
     let mut res = Vec::with_capacity(n);
     res.push(vec![]);
     let mut count = 0;
@@ -13,7 +13,7 @@ pub fn to_chunks<T>(v: Vec<T>, n: usize) -> Vec<Vec<T>> {
     res
 }
 
-pub fn to_chunks1<T>(v: &[T], n: usize) -> Vec<Vec<T>> {
+pub fn slice_to_chunks<T>(v: &[T], n: usize) -> Vec<Vec<T>> {
     let mut res = Vec::with_capacity(n);
     res.push(vec![]);
     let mut count = 0;
@@ -26,6 +26,57 @@ pub fn to_chunks1<T>(v: &[T], n: usize) -> Vec<Vec<T>> {
         }
     }
     res
+}
+
+pub fn flatten<T: Clone>(v: &Vec<Vec<T>>) -> Vec<T> {
+    let mut res = vec![];
+    for i in v.iter() {
+        for j in i.iter() {
+            res.push(j.clone());
+        }
+    }
+    res
+}
+
+pub fn partitions_n<T: Copy + PartialEq + Ord>(v: Vec<T>, n: u64) -> Vec<Vec<T>> {
+    match n {
+        0 => {
+            return vec![vec![]];
+        }
+        1 => {
+            let mut res = vec![];
+            for i in v.iter() {
+                res.push(vec![*i]);
+            }
+            return res;
+        }
+        a if a == v.len() as u64 => {
+            return vec![v];
+        }
+        a => {
+            let vs: Vec<Vec<Vec<T>>> = v
+                .iter()
+                .map(|x| {
+                    let mut z = v.clone();
+                    let w = z
+                        .iter_mut()
+                        .filter(|y| (**y) > (*x))
+                        .map(|y| (*y))
+                        .collect();
+                    (x, w)
+                })
+                .map(|(x, z)| {
+                    let mut xs = partitions_n(z, a - 1);
+                    for i in xs.iter_mut() {
+                        i.push(*x);
+                        i.sort();
+                    }
+                    xs
+                })
+                .collect();
+            return flatten(&vs);
+        }
+    }
 }
 
 pub fn one_over_sqrt(n: f64) -> f64 {
@@ -103,7 +154,6 @@ pub fn factorial_f64(n: u64) -> f64 {
     for i in 2..=n {
         res *= i as f64;
     }
-    // println!("{}", res);
     res
 }
 
@@ -119,7 +169,6 @@ pub fn is_power_of_n<
         res = res / value;
     }
     true
-    // res
 }
 
 pub fn max_of_two<
@@ -139,27 +188,3 @@ pub fn max_of_two<
 pub fn fequals(x: f64, y: f64, diff: u64) -> bool {
     f64::abs(x - y) <= (10.0 as f64).powi(-(diff as i32))
 }
-
-// macro_rules! max_of_two {
-//     ($x:ty, $name:tt) => {
-//         pub fn $name(a: $x, b: $x) -> $x {
-//             a * ((a >= b) as $x) + b * ((b > a) as $x)
-//         }
-//     };
-// }
-//
-// max_of_two!(u8, max_of_two_u8);
-// max_of_two!(u16, max_of_two_u16);
-// max_of_two!(u32, max_of_two_u32);
-// max_of_two!(u64, max_of_two_u64);
-// max_of_two!(u128, max_of_two_u128);
-// max_of_two!(usize, max_of_two_usize);
-//
-// max_of_two!(i8, max_of_two_i8);
-// max_of_two!(i16, max_of_two_i16);
-// max_of_two!(i32, max_of_two_i32);
-// max_of_two!(i64, max_of_two_i64);
-// max_of_two!(i128, max_of_two_i128);
-// max_of_two!(isize, max_of_two_isize);
-
-// pub fn divmod

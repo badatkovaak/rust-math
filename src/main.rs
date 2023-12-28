@@ -7,7 +7,6 @@ pub mod constants;
 pub mod cs;
 pub mod linear_algebra;
 pub mod long;
-pub mod misc;
 pub mod numeric;
 pub mod qoi;
 pub mod utils;

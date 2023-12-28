@@ -5,13 +5,21 @@ use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
-use crate::utils::{to_chunks, to_chunks1};
+use crate::utils::{slice_to_chunks, vec_to_chunks};
 
 pub struct Pixel {
     r: u8,
     g: u8,
     b: u8,
     a: u8,
+}
+
+pub struct QoiHeader {
+    magic: [u8; 4],
+    width: u32,
+    height: u32,
+    channels: u8,
+    colorspace: u8,
 }
 
 pub struct Image {
@@ -30,7 +38,7 @@ pub fn qoi_hash(p: Pixel) -> u64 {
 // }
 
 pub fn bytes_to_pixels(b: &[u8]) -> Vec<Pixel> {
-    to_chunks1(b, 4)
+    slice_to_chunks(b, 4)
         .iter()
         .map(|x| Pixel {
             r: x[0],
@@ -40,20 +48,6 @@ pub fn bytes_to_pixels(b: &[u8]) -> Vec<Pixel> {
         })
         .collect::<Vec<Pixel>>()
 }
-//
-// pub fn read_image(p: &Path) -> io::Result<Vec<Pixel>> {
-//     Ok(to_chunks(read(p)?, 4)
-//         .iter()
-//         .map(|x| Pixel {
-//             r: x[0],
-//             g: x[1],
-//             b: x[2],
-//             a: x[3],
-//         })
-//         .collect::<Vec<Pixel>>())
-// }
-//
-// pub fn encode(im: &Image) ->
 
 // pub fn encode(p: &Path) -> io::Result<usize> {
 //     let v = read("assets/python-24.raw")?;
