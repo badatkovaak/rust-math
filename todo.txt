@@ -1,0 +1,10 @@
+discrete fourier transform
+fast fourier transform
+discrete cosine transform
+symbolic differentiation
+symbolic integration
+determinant
+QR decomposition
+LU decomposition
+Solving systems of linear equations
+matrix inverses

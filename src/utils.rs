@@ -1,3 +1,33 @@
+pub fn to_chunks<T>(v: Vec<T>, n: usize) -> Vec<Vec<T>> {
+    let mut res = Vec::with_capacity(n);
+    res.push(vec![]);
+    let mut count = 0;
+    for k in v.iter() {
+        if res[count].len() <= n {
+            res[count].push(*k);
+        } else {
+            count += 1;
+            res.push(vec![]);
+        }
+    }
+    res
+}
+
+pub fn to_chunks1<T>(v: &[T], n: usize) -> Vec<Vec<T>> {
+    let mut res = Vec::with_capacity(n);
+    res.push(vec![]);
+    let mut count = 0;
+    for k in v.iter() {
+        if res[count].len() <= n {
+            res[count].push(*k);
+        } else {
+            count += 1;
+            res.push(vec![]);
+        }
+    }
+    res
+}
+
 pub fn one_over_sqrt(n: f64) -> f64 {
     let mut i: u64 = unsafe { std::mem::transmute::<_, u64>(n) };
     i = 0x5FE6EB50C7B537A9 - (i >> 1);

@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+
 pub mod algebra;
 pub mod constants;
 pub mod cs;
@@ -8,7 +9,10 @@ pub mod linear_algebra;
 pub mod long;
 pub mod misc;
 pub mod numeric;
+pub mod qoi;
 pub mod utils;
+
+use std::path::Path;
 
 use linear_algebra::matrix::Matrix;
 
@@ -25,6 +29,7 @@ use algebra::c_algebraic::CAlg;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
 use algebra::poly_c::{gcd, PolyC};
+use qoi::encoder::encode;
 
 fn main() {
     println!();
@@ -32,19 +37,19 @@ fn main() {
     // let vec2: Vec<f64> = vec![4., 5., 6.];
     // let vec12 = vector::add(&vec1, &vec2);
 
-    let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
-    let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+    // let mut m1 = Matrix(vec![vec![1., 2., 3.], vec![4., 5., 6.], vec![7., 8., 9.]]);
+    // let mut m2 = Matrix(vec![vec![2., 3., 4.], vec![4., 5., 6.], vec![7., 8., 9.]]);
     // let mut m3 = Matrix(vec![vec![1., 2.], vec![3., 4.]]);
     // let mut m4 = Matrix(vec![vec![1., 0.], vec![0., 1.0]]);
     // let x = Matrix::scalar_mult(m1.clone(), 3.);
-    println!(
-        "{}\n{}\n{}\n{}\n{}",
-        (m1.clone() + m2.clone()),
-        (m1.clone() - m2.clone()),
-        (m1.clone() * m2.clone()).unwrap(),
-        m1.clone().make_into_step_form(),
-        m2.clone().make_into_step_form()
-    );
+    // println!(
+    //     "{}\n{}\n{}\n{}\n{}",
+    //     (m1.clone() + m2.clone()),
+    //     (m1.clone() - m2.clone()),
+    //     (m1.clone() * m2.clone()).unwrap(),
+    //     m1.clone().make_into_step_form(),
+    //     m2.clone().make_into_step_form()
+    // );
 
     // let c1 = CAlgebraic(1., 1.);
     // let c2 = CAlgebraic(-1., 1.);
@@ -169,5 +174,7 @@ fn main() {
     // misc::hanoi::myprint(&a);
     // misc::hanoi::solve(&mut a, 5, 1, 2);
     // println!("{:?}", vector::scalar_mult(&vec1, 10.));
+    println!("{:?}", encode(&Path::new("assets/out.raw")));
+
     println!()
 }
