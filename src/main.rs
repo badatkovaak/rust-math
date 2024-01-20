@@ -32,7 +32,8 @@ use algebra::poly_c::{gcd, PolyC};
 use cs::life::{self, Game};
 
 fn test1(h: u64, w: u64, i: u64) -> (u64, u64) {
-    let (ih, iw) = (i / (8 * w) * h / 8, (i % w) / 8);
+    let (ih, iw) = (i / w, i % w);
+    // let (ih, iw) = (i / (8 * w) * h / 8, (i % w) / 8);
     return (ih, iw);
 }
 
@@ -57,7 +58,10 @@ fn main() {
     //     m2.clone().inverse()
     // );
 
-    println!("{:?}", test1(32, 32, 255));
+    let (h, w) = (16, 16);
+    let z = vec![1, 0, 2, 7, 4, 20, 30, 40, 55, 254];
+    let x = Game::new_from_filled(z, h, w);
+    println!("{}", x.unwrap());
 
     // let c1 = CAlgebraic(1., 1.);
     // let c2 = CAlgebraic(-1., 1.);
