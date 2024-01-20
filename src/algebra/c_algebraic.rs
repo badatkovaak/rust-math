@@ -4,58 +4,58 @@ use std::cmp;
 use std::ops;
 
 #[derive(Debug, Clone, Copy)]
-pub struct CAlg(pub f64, pub f64);
+pub struct Complex(pub f64, pub f64);
 
-impl std::fmt::Display for CAlg {
+impl std::fmt::Display for Complex {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{} + {}i", self.0, self.1)
     }
 }
 
-impl cmp::PartialEq for CAlg {
+impl cmp::PartialEq for Complex {
     fn eq(&self, other: &Self) -> bool {
         fequals(self.0, other.0, 13) && fequals(self.1, other.1, 13)
     }
 }
 
-impl ops::Neg for CAlg {
-    type Output = CAlg;
+impl ops::Neg for Complex {
+    type Output = Complex;
     fn neg(self) -> Self::Output {
         self.scale(-1.)
     }
 }
 
-impl ops::Neg for &CAlg {
-    type Output = CAlg;
+impl ops::Neg for &Complex {
+    type Output = Complex;
     fn neg(self) -> Self::Output {
         self.scale(-1.)
     }
 }
 
-impl ops::Add for CAlg {
-    type Output = CAlg;
+impl ops::Add for Complex {
+    type Output = Complex;
 
     fn add(self, rhs: Self) -> Self::Output {
-        CAlg(self.0 + rhs.0, self.1 + rhs.1)
+        Complex(self.0 + rhs.0, self.1 + rhs.1)
     }
 }
 
-impl ops::AddAssign for CAlg {
+impl ops::AddAssign for Complex {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs;
     }
 }
 
-impl ops::Sub for CAlg {
-    type Output = CAlg;
+impl ops::Sub for Complex {
+    type Output = Complex;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        CAlg(self.0 - rhs.0, self.1 - rhs.1)
+        Complex(self.0 - rhs.0, self.1 - rhs.1)
     }
 }
 
-impl ops::Mul for CAlg {
-    type Output = CAlg;
+impl ops::Mul for Complex {
+    type Output = Complex;
 
     fn mul(self, rhs: Self) -> Self::Output {
         Self(
@@ -65,52 +65,52 @@ impl ops::Mul for CAlg {
     }
 }
 
-impl ops::Div for CAlg {
-    type Output = CAlg;
+impl ops::Div for Complex {
+    type Output = Complex;
 
     fn div(self, rhs: Self) -> Self::Output {
         self.scale(1. / (rhs.0 * rhs.0 + rhs.1 * rhs.1)) * rhs.conjugate()
     }
 }
 
-impl ops::Add for &CAlg {
-    type Output = CAlg;
+impl ops::Add for &Complex {
+    type Output = Complex;
 
     fn add(self, rhs: Self) -> Self::Output {
-        CAlg(self.0 + rhs.0, self.1 + rhs.1)
+        Complex(self.0 + rhs.0, self.1 + rhs.1)
     }
 }
 
-impl ops::Sub for &CAlg {
-    type Output = CAlg;
+impl ops::Sub for &Complex {
+    type Output = Complex;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        CAlg(self.0 - rhs.0, self.1 - rhs.1)
+        Complex(self.0 - rhs.0, self.1 - rhs.1)
     }
 }
 
-impl ops::Mul for &CAlg {
-    type Output = CAlg;
+impl ops::Mul for &Complex {
+    type Output = Complex;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        CAlg(
+        Complex(
             self.0 * rhs.0 - self.1 * rhs.1,
             self.0 * rhs.1 + self.1 * rhs.0,
         )
     }
 }
 
-impl ops::Div for &CAlg {
-    type Output = CAlg;
+impl ops::Div for &Complex {
+    type Output = Complex;
 
     fn div(self, rhs: Self) -> Self::Output {
         self.scale(1. / (rhs.0 * rhs.0 + rhs.1 * rhs.1)) * rhs.conjugate()
     }
 }
 
-impl std::iter::Sum for CAlg {
+impl std::iter::Sum for Complex {
     fn sum<I: Iterator<Item = Self>>(iter: I) -> Self {
-        iter.reduce(|x, y| x + y).unwrap_or(CAlg(0., 0.))
+        iter.reduce(|x, y| x + y).unwrap_or(Complex(0., 0.))
     }
 }
 
@@ -125,25 +125,25 @@ impl std::iter::Sum for CAlg {
 //     }
 // }
 
-impl CAlg {
+impl Complex {
     pub fn magnitude(self: &Self) -> f64 {
         f64::sqrt(self.0 * self.0 + self.1 * self.1)
     }
 
     pub fn conjugate(self: &Self) -> Self {
-        CAlg(self.0, -self.1)
+        Complex(self.0, -self.1)
     }
 
     pub fn scale(self: &Self, s: f64) -> Self {
-        CAlg(self.0 * s, self.1 * s)
+        Complex(self.0 * s, self.1 * s)
     }
 
     pub fn algebraic_to_polar(self: &Self) -> c_polar::CPolar {
         c_polar::CPolar(self.0 / self.magnitude(), self.1 / self.magnitude())
     }
 
-    pub fn pow(self, e: i64) -> CAlg {
-        let mut res = CAlg(1., 0.);
+    pub fn pow(self, e: i64) -> Complex {
+        let mut res = Complex(1., 0.);
 
         if e == 0 {
             return res;
@@ -155,7 +155,7 @@ impl CAlg {
         if e > 0 {
             return res;
         } else {
-            return CAlg(1., 0.) / res;
+            return Complex(1., 0.) / res;
         }
     }
 

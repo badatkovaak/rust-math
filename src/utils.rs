@@ -1,32 +1,32 @@
-pub fn vec_to_chunks<T>(v: Vec<T>, n: usize) -> Vec<Vec<T>> {
-    let mut res = Vec::with_capacity(n);
-    res.push(vec![]);
-    let mut count = 0;
-    for k in v.iter() {
-        if res[count].len() <= n {
-            res[count].push(*k);
-        } else {
-            count += 1;
-            res.push(vec![]);
-        }
-    }
-    res
-}
-
-pub fn slice_to_chunks<T>(v: &[T], n: usize) -> Vec<Vec<T>> {
-    let mut res = Vec::with_capacity(n);
-    res.push(vec![]);
-    let mut count = 0;
-    for k in v.iter() {
-        if res[count].len() <= n {
-            res[count].push(*k);
-        } else {
-            count += 1;
-            res.push(vec![]);
-        }
-    }
-    res
-}
+// pub fn vec_to_chunks<T>(v: Vec<T>, n: usize) -> Vec<Vec<T>> {
+//     let mut res = Vec::with_capacity(n);
+//     res.push(vec![]);
+//     let mut count = 0;
+//     for k in v.iter() {
+//         if res[count].len() <= n {
+//             res[count].push(*k);
+//         } else {
+//             count += 1;
+//             res.push(vec![]);
+//         }
+//     }
+//     res
+// }
+//
+// pub fn slice_to_chunks<T>(v: &[T], n: usize) -> Vec<Vec<T>> {
+//     let mut res = Vec::with_capacity(n);
+//     res.push(vec![]);
+//     let mut count = 0;
+//     for k in v.iter() {
+//         if res[count].len() <= n {
+//             res[count].push(*k);
+//         } else {
+//             count += 1;
+//             res.push(vec![]);
+//         }
+//     }
+//     res
+// }
 
 pub fn flatten<T: Clone>(v: &Vec<Vec<T>>) -> Vec<T> {
     let mut res = vec![];

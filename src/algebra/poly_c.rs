@@ -1,12 +1,12 @@
 #[derive(Debug, Clone)]
-pub struct PolyC(pub Vec<CAlg>);
+pub struct PolyC(pub Vec<Complex>);
 
 use crate::constants::PI;
 use crate::utils::{self, fequals, is_power_of_n};
 use std::iter::zip;
 use std::ops;
 
-use crate::algebra::c_algebraic::CAlg;
+use crate::algebra::c_algebraic::Complex;
 use crate::utils::max_of_two;
 
 impl std::fmt::Display for PolyC {
@@ -19,7 +19,7 @@ impl ops::Neg for PolyC {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        PolyC(self.0.iter().map(|x| -x).collect::<Vec<CAlg>>())
+        PolyC(self.0.iter().map(|x| -x).collect::<Vec<Complex>>())
     }
 }
 
@@ -32,19 +32,19 @@ impl ops::Add for PolyC {
         }
 
         let mlen = max_of_two(self.len(), rhs.len());
-        let mut op1: Vec<CAlg>;
-        let mut op2: Vec<CAlg>;
+        let mut op1: Vec<Complex>;
+        let mut op2: Vec<Complex>;
 
         if self.len() < mlen {
             op1 = self.0.clone();
             while op1.len() < mlen {
-                op1.push(CAlg(0., 0.));
+                op1.push(Complex(0., 0.));
             }
             op2 = rhs.0.clone();
         } else {
             op2 = rhs.0.clone();
             while op2.len() < mlen {
-                op2.push(CAlg(0., 0.));
+                op2.push(Complex(0., 0.));
             }
             op1 = self.0.clone();
         }
@@ -65,14 +65,14 @@ impl ops::Mul for PolyC {
     type Output = PolyC;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        let mut res = vec![CAlg(0., 0.); self.len() + rhs.len()];
+        let mut res = vec![Complex(0., 0.); self.len() + rhs.len()];
         for i in 0..self.len() {
             for j in 0..rhs.len() {
                 res[i + j] += self.0[i] * rhs.0[j];
             }
         }
         while match res.last() {
-            Some(a) => *a == CAlg(0., 0.),
+            Some(a) => *a == Complex(0., 0.),
             None => false,
         } {
             res.pop();
@@ -89,26 +89,26 @@ impl ops::Div for PolyC {
 
         if self.len() < rhs.len() {
             // println!("hi");
-            return (PolyC(vec![CAlg(0., 0.)]), self);
+            return (PolyC(vec![Complex(0., 0.)]), self);
         }
 
         let p1 = self.0.clone();
         let mut p2 = rhs.0.clone();
-        let p3: Vec<CAlg>;
+        let p3: Vec<Complex>;
         let mut count = 0;
 
         while p1.len() > p2.len() {
-            p2.insert(0, CAlg(0., 0.));
+            p2.insert(0, Complex(0., 0.));
             count += 1;
         }
 
-        let mut q = PolyC(vec![CAlg(0., 0.); count]);
+        let mut q = PolyC(vec![Complex(0., 0.); count]);
         // let r = Polynomial(vec![]);
 
         let (c1, c2) = (p1.last().unwrap(), p2.last().unwrap());
 
         if c1 != c2 {
-            p3 = p2.iter().map(|x| x * c1 / (*c2)).collect::<Vec<CAlg>>();
+            p3 = p2.iter().map(|x| x * c1 / (*c2)).collect::<Vec<Complex>>();
         } else {
             p3 = p2.clone();
         }
@@ -123,7 +123,6 @@ impl ops::Div for PolyC {
         // println!("c: {}", c);
         // println!();
         ((q + a).prettify(), b.prettify())
-        // (q.prettify(), r.prettify())
     }
 }
 
@@ -133,9 +132,9 @@ impl PolyC {
         for (i, v) in self.0.iter().enumerate().rev() {
             if self.len() == 1 {
                 res.extend(format!("({})", v).chars());
-            } else if i != 0 && *v != CAlg(0., 0.) {
+            } else if i != 0 && *v != Complex(0., 0.) {
                 res.extend(format!("({})x^{} + ", v, i).chars());
-            } else if i == 0 && *v != CAlg(0., 0.) {
+            } else if i == 0 && *v != Complex(0., 0.) {
                 res.extend(format!("({})", v).chars());
             }
         }
@@ -150,15 +149,15 @@ impl PolyC {
         res
     }
 
-    fn eval(&self, point: CAlg) -> CAlg {
+    fn eval(&self, point: Complex) -> Complex {
         self.0
             .iter()
             .enumerate()
             .map(|(i, v)| (*v) * (point.pow(i as i64)))
-            .sum::<CAlg>()
+            .sum::<Complex>()
     }
 
-    fn scale_by(&mut self, s: CAlg) {
+    fn scale_by(&mut self, s: Complex) {
         for i in self.0.iter_mut() {
             *i = (*i) * s;
         }
@@ -166,7 +165,7 @@ impl PolyC {
 
     fn strip_zeros(mut self) -> Self {
         while let Some(&c) = self.0.last() {
-            if c == CAlg(0., 0.) && self.len() > 1 {
+            if c == Complex(0., 0.) && self.len() > 1 {
                 self.0.pop();
             } else {
                 break;
@@ -177,8 +176,8 @@ impl PolyC {
 
     fn normalize(mut self) -> Self {
         if let Some(&c) = self.0.last() {
-            if c != CAlg(1., 0.) && c != CAlg(0., 0.) && self.len() > 0 {
-                self.scale_by(CAlg(1., 0.) / c);
+            if c != Complex(1., 0.) && c != Complex(0., 0.) && self.len() > 0 {
+                self.scale_by(Complex(1., 0.) / c);
             }
         }
         self
@@ -209,25 +208,25 @@ pub fn gcd(p1: PolyC, p2: PolyC) -> PolyC {
     }
     // println!("a: {}, b: {:?}", a, b);
 
-    if a.len() == 1 && a.0[0] == CAlg(0., 0.) {
+    if a.len() == 1 && a.0[0] == Complex(0., 0.) {
         return b;
-    } else if b.len() == 1 && b.0[0] == CAlg(0., 0.) {
+    } else if b.len() == 1 && b.0[0] == Complex(0., 0.) {
         return a;
     } else if a.len() == 1 {
         return a;
     } else if b.len() == 1 {
         return b;
     } else {
-        return PolyC(vec![CAlg(0., 0.)]);
+        return PolyC(vec![Complex(0., 0.)]);
     }
 }
 
-pub fn mult_values(c1: Vec<CAlg>, c2: Vec<CAlg>) -> Option<Vec<CAlg>> {
+pub fn mult_values(c1: Vec<Complex>, c2: Vec<Complex>) -> Option<Vec<Complex>> {
     // println!("mult_values : \n{:?}\n{:?}\n", c1, c2);
     if c1.len() != c2.len() {
         return None;
     }
-    let mut res = vec![CAlg(1.0, 0.0); c1.len()];
+    let mut res = vec![Complex(1.0, 0.0); c1.len()];
     for i in 0..c1.len() {
         res[i] = c1[i] * c2[i];
     }
@@ -235,9 +234,9 @@ pub fn mult_values(c1: Vec<CAlg>, c2: Vec<CAlg>) -> Option<Vec<CAlg>> {
     Some(res)
 }
 
-pub fn fuse_together(v1: &Vec<CAlg>, v2: &Vec<CAlg>) -> Vec<CAlg> {
+pub fn fuse_together(v1: &Vec<Complex>, v2: &Vec<Complex>) -> Vec<Complex> {
     if v1.len() != v2.len() {
         panic!();
     }
-    zip(v1, v2).map(|(x, y)| x + y).collect::<Vec<CAlg>>()
+    zip(v1, v2).map(|(x, y)| x + y).collect::<Vec<Complex>>()
 }

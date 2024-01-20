@@ -29,9 +29,9 @@ impl ops::Div for CPolar {
 }
 
 impl CPolar {
-    fn polar_to_algebraic(z: CPolar) -> c_algebraic::CAlg {
+    fn polar_to_algebraic(z: CPolar) -> c_algebraic::Complex {
         let c = z.1.sin_cos();
-        c_algebraic::CAlg(z.0 * c.1, z.0 * c.0)
+        c_algebraic::Complex(z.0 * c.1, z.0 * c.0)
     }
 
     fn n_th_roots(self, n: u64) -> Vec<CPolar> {

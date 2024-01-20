@@ -29,7 +29,7 @@ impl FromIterator<Vec<f64>> for Matrix {
 
 impl std::cmp::PartialEq for Matrix {
     fn eq(&self, other: &Self) -> bool {
-        if self.get_dimensions() != other.get_dimensions() {
+        if self.get_dims() != other.get_dims() {
             return false;
         }
 
@@ -122,18 +122,18 @@ impl Matrix {
         return self;
     }
 
-    pub fn get_dimensions(&self) -> (usize, usize) {
+    pub fn get_dims(&self) -> (usize, usize) {
         (self.0.len(), self.0[0].len())
     }
 
-    pub fn elem_tr_1(self, i: u32, j: u32) -> Matrix {
+    pub fn elem_tr_1(self, i: u64, j: u64) -> Matrix {
         let cond = |k, l| {
             let c1 = k == l && k != j && k != i;
             let c2 = k == i && l == j;
             let c3 = k == j && l == i;
-            (c1 || c2 || c3) as u32
+            (c1 || c2 || c3) as u64
         };
-        let dims = self.get_dimensions();
+        let dims = self.get_dims();
         let elem_matrix: Matrix = Matrix(
             vec![vec![0.; dims.1]; dims.0]
                 .iter_mut()
@@ -141,7 +141,7 @@ impl Matrix {
                 .map(|(k, z)| {
                     z.iter()
                         .enumerate()
-                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                        .map(|(l, v)| v + cond(k as u64, l as u64) as f64)
                         .collect()
                 })
                 .collect(),
@@ -150,13 +150,13 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
-    pub fn elem_tr_2(self, i: u32, m: f64) -> Matrix {
+    pub fn elem_tr_2(self, i: u64, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i) {
             (true, true) => m,
             (true, false) => 1.,
             (false, _) => 0.,
         };
-        let dims = self.get_dimensions();
+        let dims = self.get_dims();
         let elem_matrix: Matrix = Matrix(
             vec![vec![0.; dims.1]; dims.0]
                 .iter_mut()
@@ -164,7 +164,7 @@ impl Matrix {
                 .map(|(k, z)| {
                     z.iter()
                         .enumerate()
-                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                        .map(|(l, v)| v + cond(k as u64, l as u64) as f64)
                         .collect()
                 })
                 .collect(),
@@ -174,13 +174,13 @@ impl Matrix {
     }
 
     // #[inline]
-    pub fn elem_tr_3(self, i: u32, j: u32, m: f64) -> Matrix {
+    pub fn elem_tr_3(self, i: u64, j: u64, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i, l == j) {
             (_, true, true) => m,
             (true, _, _) => 1.,
             (_, _, _) => 0.,
         };
-        let dims = self.get_dimensions();
+        let dims = self.get_dims();
         let elem_matrix: Matrix = Matrix(
             vec![vec![0.; dims.1]; dims.0]
                 .iter_mut()
@@ -188,7 +188,7 @@ impl Matrix {
                 .map(|(k, z)| {
                     z.iter()
                         .enumerate()
-                        .map(|(l, v)| v + cond(k as u32, l as u32) as f64)
+                        .map(|(l, v)| v + cond(k as u64, l as u64) as f64)
                         .collect()
                 })
                 .collect(),
@@ -197,9 +197,7 @@ impl Matrix {
         (elem_matrix * self).unwrap()
     }
 
-    // #[inline]
     pub fn count_elems(self: &Matrix) -> u64 {
-        // println!("{}", self);
         self.iter()
             .map(|x| {
                 x.iter()
@@ -209,22 +207,19 @@ impl Matrix {
             .sum::<u64>()
     }
 
-    pub fn make_into_step_form(&self) -> Matrix {
+    pub fn to_row_echelon_form(&self) -> Matrix {
         if self.count_elems() <= 1 {
             return self.clone();
         }
 
         let mut res = self.clone();
 
-        // println!("{}", res);
-
-        let mut i: u32 = 0;
+        let mut i: u64 = 0;
         while res.0[0][0] == 0. {
-            // println!("{}", i);
-            res = res.elem_tr_1(0, i as u32);
+            res = res.elem_tr_1(0, i);
             i += 1;
             if i as usize >= res.0.len() {
-                return res.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
+                return res.stitch(&(&mut res.cut(0, 1)).to_row_echelon_form());
             }
         }
 
@@ -233,59 +228,82 @@ impl Matrix {
             res = res.elem_tr_2(0, 1. / v);
         }
 
-        // println!("{}", res);
         for i in 1..res.0.len() {
             let v = res.0[i][0];
-            // println!("{}", v);
-            res = res.elem_tr_3(i as u32, 0, -v);
+            res = res.elem_tr_3(i as u64, 0, -v);
         }
-        // println!("{}", res);
 
-        return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
-
-        // return get_id_matrix(3);
+        res.stitch(&(&mut res.cut(1, 1)).to_row_echelon_form())
     }
 
     pub fn inverse(&mut self) -> Matrix {
-        if self.count_elems() <= 1 {
-            return self.clone();
+        #[derive(Debug)]
+        enum Trnsfrm {
+            Tr1(u64, u64),
+            Tr2(u64, f64),
+            Tr3(u64, u64, f64),
         }
 
-        let mut res = self.clone();
-
-        // println!("{}", res);
-
-        let mut i: u32 = 0;
-        while res.0[0][0] == 0. {
-            // println!("{}", i);
-            res = res.elem_tr_1(0, i as u32);
-            i += 1;
-            if i as usize >= res.0.len() {
-                return res.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
+        fn echelon_form_tracking(m: &mut Matrix) -> Vec<Trnsfrm> {
+            if m.count_elems() <= 1 {
+                return vec![];
             }
+
+            let mut res = m.clone();
+            let mut transformations: Vec<Trnsfrm> = vec![];
+
+            let mut i: u64 = 0;
+            while res.0[0][0] == 0. {
+                res = res.elem_tr_1(0, i);
+                transformations.push(Trnsfrm::Tr1(0, i));
+                i += 1;
+                if i as usize >= res.0.len() {
+                    return transformations;
+                }
+            }
+
+            if !fequals(res.0[0][0], 1., 12) {
+                let v = res.0[0][0];
+                res = res.elem_tr_2(0, 1. / v);
+                // transformations.push(Trnsfrm::Tr2(0, 1. / v));
+            }
+
+            for i in 1..res.0.len() {
+                let v = res.0[i][0];
+                res = res.elem_tr_3(i as u64, 0, -v);
+                transformations.push(Trnsfrm::Tr3(i as u64, 0, -v));
+            }
+
+            let x = echelon_form_tracking(&mut res.cut(1, 1));
+            transformations.extend(x);
+
+            transformations
         }
 
-        if !fequals(res.0[0][0], 1., 12) {
-            let v = res.0[0][0];
-            res = res.elem_tr_2(0, 1. / v);
+        fn trs_to_matrix(v: Vec<Trnsfrm>, dim: u64) -> Matrix {
+            let mut res = get_id_matrix(dim);
+            for i in v.iter().rev() {
+                match *i {
+                    Trnsfrm::Tr1(i, j) => {
+                        res = res.elem_tr_1(i, j);
+                    }
+                    Trnsfrm::Tr2(i, m) => {
+                        res = res.elem_tr_2(i, m);
+                    }
+                    Trnsfrm::Tr3(i, j, m) => {
+                        res = res.elem_tr_3(i, j, m);
+                    }
+                }
+            }
+            res
         }
 
-        // println!("{}", res);
-        for i in 1..res.0.len() {
-            let v = res.0[i][0];
-            // println!("{}", v);
-            res = res.elem_tr_3(i as u32, 0, -v);
-        }
-        // println!("{}", res);
-
-        return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
-
-        // return get_id_matrix(3);
+        trs_to_matrix(echelon_form_tracking(self), self.0.len() as u64)
     }
 
     pub fn stitch(&self, m: &Matrix) -> Matrix {
         let mut res = self.clone();
-        let (d1, d2) = self.get_dimensions();
+        let (d1, d2) = self.get_dims();
         for i in 1..d1 {
             for j in 1..d2 {
                 res.0[i][j] = m.0[i - 1][j - 1];
@@ -334,13 +352,13 @@ impl Matrix {
             .map(|x| {
                 x.iter()
                     .map(|y| format!("{}", y))
-                    .fold(String::from(" "), |acc, y| acc + &y + " ")
+                    .fold(String::from(" "), |acc, y| acc + &y + "\t")
             })
             .fold(String::from(" "), |acc, y| acc + &y + "\n ")
     }
 }
 
-pub fn get_id_matrix(dim: u32) -> Matrix {
+pub fn get_id_matrix(dim: u64) -> Matrix {
     let mut res = vec![vec![0.; dim as usize]; dim as usize];
     for i in 0..dim {
         res[i as usize][i as usize] = 1.;
@@ -348,7 +366,7 @@ pub fn get_id_matrix(dim: u32) -> Matrix {
     return Matrix(res);
 }
 
-pub fn scalar_to_matrix(value: f64, dim: u32) -> Matrix {
+pub fn scalar_to_matrix(value: f64, dim: u64) -> Matrix {
     get_id_matrix(dim).scalar_mult(value)
 }
 

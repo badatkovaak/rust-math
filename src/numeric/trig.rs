@@ -20,7 +20,7 @@ pub fn cos(x: f64) -> f64 {
     res
 }
 
-#[inline]
+// #[inline]
 pub fn trim_2pi(x: f64) -> f64 {
     let mut y = x;
     while y.abs() > 2. * PI {
