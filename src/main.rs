@@ -13,10 +13,12 @@ pub mod qoi;
 pub mod utils;
 
 use std::path::Path;
+use std::time::{self, Instant};
 
 use linear_algebra::matrix::Matrix;
 
 use crate::constants::{E, LN2};
+use crate::cs::life::set_bit;
 use crate::numeric::general::*;
 // use crate::complex_nums;
 // use crate::compute;
@@ -58,11 +60,39 @@ fn main() {
     //     m2.clone().inverse()
     // );
 
-    let (h, w) = (16, 16);
-    let z = vec![1, 0, 2, 7, 4, 20, 30, 40, 55, 254];
-    let x = Game::new_from_filled(z, h, w);
-    println!("{}", x.unwrap());
+    let (h, w) = (1024, 1024);
+    // let z = vec![17, 19, 34, 35, 50];
+    // let z = vec![3, 35, 67];
+    let z = vec![
+        (4, 6),
+        (5, 6),
+        (6, 5),
+        (6, 7),
+        (7, 6),
+        (8, 6),
+        (9, 6),
+        (10, 6),
+        (11, 5),
+        (11, 7),
+        (12, 6),
+        (13, 6),
+    ];
+    let start = time::Instant::now();
+    let mut x = Game::new_from_coords(z, h, w).unwrap();
+    // println!("{}\n", x.clone());
+    // let n = 300420392;
+    // println!(
+    //     "{}\n{}",
+    //     life::to_binary_string(n),
+    //     life::to_binary_string(set_bit(n, 20, false))
+    // );
+    for i in 0..20 {
+        x.run();
+        // println!("\n{}", x.clone());
+    }
 
+    let end = start.elapsed();
+    println!("Executed in  : {:?}", end);
     // let c1 = CAlgebraic(1., 1.);
     // let c2 = CAlgebraic(-1., 1.);
     //

@@ -1,5 +1,7 @@
 Computer Science:
     huffman encoding/decoding
+    software CPU
+    Conway's Game of Life with 'infinite' plane
 
 Signal Processing:
     discrete fourier transform
@@ -28,6 +30,6 @@ Graphics:
 Images:
     qoi suite
     qoi <=> png
-    tiff reader
+    // tiff reader
     png suite ?
     jpeg suite ??

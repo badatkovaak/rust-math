@@ -204,7 +204,7 @@ pub fn gcd(p1: PolyC, p2: PolyC) -> PolyC {
 
     while a.len() > 1 && b.len() > 1 {
         (a, b) = (b.clone(), (a / b).1);
-        println!("a: {}, b: {}", a, b);
+        // println!("a: {}, b: {}", a, b);
     }
     // println!("a: {}, b: {:?}", a, b);
 

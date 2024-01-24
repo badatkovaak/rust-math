@@ -1,6 +1,7 @@
 #[derive(Debug, Clone)]
 pub struct MatrixV2 {
-    pub m: Vec<f64>,
+    // pub m: Vec<f64>,
+    pub m: Box<[f64]>,
     pub dims: (usize, usize),
 }
 
@@ -35,7 +36,8 @@ impl ops::Neg for MatrixV2 {
 
     fn neg(self) -> Self::Output {
         MatrixV2 {
-            m: self.m.iter().map(|x| -1. * x).collect::<Vec<f64>>(),
+            // m: self.m.iter().map(|x| -1. * x).collect::<Vec<f64>>(),
+            m: self.m.iter().map(|x| -1. * x).collect::<Box<[f64]>>(),
             dims: self.dims,
         }
     }
@@ -49,7 +51,10 @@ impl ops::Add for MatrixV2 {
             return None;
         }
         Some(MatrixV2 {
-            m: zip(self.m, rhs.m).map(|(x, y)| x + y).collect::<Vec<f64>>(),
+            // m: zip(self.m, rhs.m).map(|(x, y)| x + y).collect::<Vec<f64>>(),
+            m: zip(self.m.iter(), rhs.m.iter())
+                .map(|(x, y)| x + y)
+                .collect::<Box<[f64]>>(),
             dims: self.dims,
         })
     }
@@ -68,7 +73,8 @@ impl ops::Neg for &MatrixV2 {
 
     fn neg(self) -> Self::Output {
         MatrixV2 {
-            m: self.m.iter().map(|x| -1. * x).collect::<Vec<f64>>(),
+            // m: self.m.iter().map(|x| -1. * x).collect::<Vec<f64>>(),
+            m: self.m.iter().map(|x| -1. * x).collect::<Box<[f64]>>(),
             dims: self.dims,
         }
     }
@@ -83,9 +89,13 @@ impl ops::Add for &MatrixV2 {
         }
 
         Some(MatrixV2 {
-            m: zip(&self.m, &rhs.m)
+            // m: zip(&self.m, &rhs.m)
+            //     .map(|(x, y)| x + y)
+            //     .collect::<Vec<f64>>(),
+            m: zip(self.m.iter(), rhs.m.iter())
                 .map(|(x, y)| x + y)
-                .collect::<Vec<f64>>(),
+                .collect::<Box<[f64]>>(),
+
             dims: self.dims,
         })
     }
@@ -106,7 +116,8 @@ impl ops::Mul for MatrixV2 {
         if self.dims.1 != rhs.dims.0 {
             return None;
         }
-        let mut res = vec![0.0; self.dims.0 * rhs.dims.1];
+        // let mut res = vec![0.0; self.dims.0 * rhs.dims.1];
+        let mut res = vec![0.0; self.dims.0 * rhs.dims.1].into_boxed_slice();
         for i in 0..self.dims.0 {
             for k in 0..rhs.dims.1 {
                 for j in 0..self.dims.1 {
@@ -115,7 +126,6 @@ impl ops::Mul for MatrixV2 {
                 }
             }
         }
-
         // for i in 0..(self.1 .0 * rhs.1 .1) {
         //     for k in 0..rhs.1 .1 {
         //         res[i] += self.0[i / self.1 .1 + k] * rhs.0[k * self.1 .1 + i % 8];
@@ -136,7 +146,8 @@ impl ops::Mul for &MatrixV2 {
         if self.dims.1 != rhs.dims.0 {
             return None;
         }
-        let mut res = vec![0.0; self.dims.0 * rhs.dims.1];
+        // let mut res = vec![0.0; self.dims.0 * rhs.dims.1];
+        let mut res = vec![0.0; self.dims.0 * rhs.dims.1].into_boxed_slice();
         for i in 0..self.dims.0 {
             for k in 0..rhs.dims.1 {
                 for j in 0..self.dims.1 {
@@ -161,7 +172,9 @@ impl ops::Mul for &MatrixV2 {
 
 impl MatrixV2 {
     fn transpose(&self) -> MatrixV2 {
-        let mut res = vec![0.0; self.dims.0 * self.dims.1];
+        // let mut res = vec![0.0; self.dims.0 * self.dims.1];
+        let mut res = vec![0.0; self.dims.0 * self.dims.1].into_boxed_slice();
+
         for i in 0..(self.dims.0 * self.dims.1) {
             res[i] = self.m[(i % self.dims.1) * self.dims.1 + (i / self.dims.1)];
         }
@@ -183,7 +196,9 @@ impl MatrixV2 {
             (c1 || c2 || c3) as u32
         };
 
-        let mut v = vec![0.0; self.dims.0 * self.dims.1];
+        // let mut v = vec![0.0; self.dims.0 * self.dims.1];
+        let mut v = vec![0.0; self.dims.0 * self.dims.1].into_boxed_slice();
+
         for i in 0..(self.dims.0 * self.dims.1) {
             v[i] = cond(i / self.dims.1, i % self.dims.1) as f64;
         }
@@ -205,7 +220,9 @@ impl MatrixV2 {
             (false, _) => 0.0,
         };
 
-        let mut v = vec![0.0; self.dims.0 * self.dims.1];
+        // let mut v = vec![0.0; self.dims.0 * self.dims.1];
+        let mut v = vec![0.0; self.dims.0 * self.dims.1].into_boxed_slice();
+
         for i in 0..(self.dims.0 * self.dims.1) {
             v[i] = cond(i / self.dims.1, i % self.dims.1) as f64;
         }
@@ -227,7 +244,9 @@ impl MatrixV2 {
             (_, _, _) => 0.0,
         };
 
-        let mut v = vec![0.0; self.dims.0 * self.dims.1];
+        // let mut v = vec![0.0; self.dims.0 * self.dims.1];
+        let mut v = vec![0.0; self.dims.0 * self.dims.1].into_boxed_slice();
+
         for i in 0..(self.dims.0 * self.dims.1) {
             v[i] = cond(i / self.dims.1, i % self.dims.1) as f64;
         }
@@ -240,7 +259,8 @@ impl MatrixV2 {
 
     fn mult_by_scalar(&self, s: f64) -> MatrixV2 {
         MatrixV2 {
-            m: self.m.iter().map(|x| s * x).collect::<Vec<f64>>(),
+            // m: self.m.iter().map(|x| s * x).collect::<Vec<f64>>(),
+            m: self.m.iter().map(|x| s * x).collect::<Box<[f64]>>(),
             dims: self.dims,
         }
     }
@@ -258,42 +278,42 @@ impl MatrixV2 {
             .count()
     }
 
-    pub fn make_into_step_form(&mut self) -> MatrixV2 {
-        if self.count_elems() <= 1 {
-            return self.clone();
-        }
-
-        let mut res = self.clone();
-
-        // println!("{}", res);
-
-        let mut i: usize = 0;
-        while res.m[0] == 0.0 {
-            // println!("{}", i);
-            res = res.elem_row_tr_1(0, i).unwrap();
-            i += 1;
-            if i as usize >= res.m.len() {
-                return self.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
-            }
-        }
-
-        if res.m[0] != 1.0 {
-            let v = res.m[0];
-            res = res.elem_row_tr_2(0, 1.0 / v).unwrap();
-        }
-
-        // println!("{}", res);
-        for i in 1..res.dims.0 {
-            let v = res.m[i * self.dims.1];
-            // println!("{}", v);
-            res = res.elem_row_tr_3(i, 0, -v).unwrap();
-        }
-        // println!("{}", res);
-
-        return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
-
-        // return get_id_matrix(3);
-    }
+    // pub fn make_into_step_form(&mut self) -> MatrixV2 {
+    //     if self.count_elems() <= 1 {
+    //         return self.clone();
+    //     }
+    //
+    //     let mut res = self.clone();
+    //
+    //     // println!("{}", res);
+    //
+    //     let mut i: usize = 0;
+    //     while res.m[0] == 0.0 {
+    //         // println!("{}", i);
+    //         res = res.elem_row_tr_1(0, i).unwrap();
+    //         i += 1;
+    //         if i as usize >= res.m.len() {
+    //             return self.stitch(&(&mut res.cut(0, 1)).make_into_step_form());
+    //         }
+    //     }
+    //
+    //     if res.m[0] != 1.0 {
+    //         let v = res.m[0];
+    //         res = res.elem_row_tr_2(0, 1.0 / v).unwrap();
+    //     }
+    //
+    //     // println!("{}", res);
+    //     for i in 1..res.dims.0 {
+    //         let v = res.m[i * self.dims.1];
+    //         // println!("{}", v);
+    //         res = res.elem_row_tr_3(i, 0, -v).unwrap();
+    //     }
+    //     // println!("{}", res);
+    //
+    //     return res.stitch(&(&mut res.cut(1, 1)).make_into_step_form());
+    //
+    //     // return get_id_matrix(3);
+    // }
 
     pub fn stitch(&self, m: &MatrixV2) -> MatrixV2 {
         let mut res = self.clone();
@@ -310,30 +330,30 @@ impl MatrixV2 {
         res
     }
 
-    pub fn cut(&self, rows: u32, columns: u32) -> MatrixV2 {
-        let mut res = self.m.clone();
-        for _ in 0..rows {
-            res.append(&mut vec![0.0; self.dims.1]);
-            for i in 0..self.dims.1 {
-                res.remove(0);
-            }
-        }
-        for i in 0..self.dims.0 {
-            for _ in 0..columns {
-                res.remove(i * self.dims.1);
-                res.insert((i + 1) * self.dims.1 - 1, 0.);
-            }
-        }
-        MatrixV2 {
-            m: res,
-            dims: self.dims,
-        }
-    }
+    // pub fn cut(&self, rows: u32, columns: u32) -> MatrixV2 {
+    //     let mut res = self.m.clone();
+    //     for _ in 0..rows {
+    //         res.append(&mut vec![0.0; self.dims.1]);
+    //         for i in 0..self.dims.1 {
+    //             res.remove(0);
+    //         }
+    //     }
+    //     for i in 0..self.dims.0 {
+    //         for _ in 0..columns {
+    //             res.remove(i * self.dims.1);
+    //             res.insert((i + 1) * self.dims.1 - 1, 0.);
+    //         }
+    //     }
+    //     MatrixV2 {
+    //         m: res,
+    //         dims: self.dims,
+    //     }
+    // }
 
-    pub fn append_row(mut self, row: Vec<f64>) -> MatrixV2 {
-        for i in 0..row.len() {
-            self.m.insert((i + 1) * self.dims.1 + 1, row[i]);
-        }
-        self
-    }
+    // pub fn append_row(mut self, row: Vec<f64>) -> MatrixV2 {
+    //     for i in 0..row.len() {
+    //         self.m.insert((i + 1) * self.dims.1 + 1, row[i]);
+    //     }
+    //     self
+    // }
 }
