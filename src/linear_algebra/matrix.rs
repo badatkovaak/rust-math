@@ -57,10 +57,6 @@ impl ops::Add for Matrix {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        // self.iter()
-        //     .zip(rhs.iter())
-        //     .map(|(x, y)| x.iter().zip(y.iter()).map(|(x1, y1)| x1 + y1).collect())
-        //     .collect()
         zip(self.iter(), rhs.iter())
             .map(|(x, y)| zip(x.iter(), y.iter()).map(|(x, y)| x + y).collect())
             .collect()
@@ -169,11 +165,9 @@ impl Matrix {
                 })
                 .collect(),
         );
-        // println!("{}", elem_matrix);
         (elem_matrix * self).unwrap()
     }
 
-    // #[inline]
     pub fn elem_tr_3(self, i: u64, j: u64, m: f64) -> Matrix {
         let cond = |k, l| match (k == l, k == i, l == j) {
             (_, true, true) => m,
@@ -193,7 +187,6 @@ impl Matrix {
                 })
                 .collect(),
         );
-        // println!("{}", elem_matrix);
         (elem_matrix * self).unwrap()
     }
 

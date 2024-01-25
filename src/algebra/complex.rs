@@ -25,13 +25,6 @@ impl ops::Neg for Complex {
     }
 }
 
-impl ops::Neg for &Complex {
-    type Output = Complex;
-    fn neg(self) -> Self::Output {
-        self.scale(-1.)
-    }
-}
-
 impl ops::Add for Complex {
     type Output = Complex;
 
@@ -70,6 +63,13 @@ impl ops::Div for Complex {
 
     fn div(self, rhs: Self) -> Self::Output {
         self.scale(1. / (rhs.0 * rhs.0 + rhs.1 * rhs.1)) * rhs.conjugate()
+    }
+}
+
+impl ops::Neg for &Complex {
+    type Output = Complex;
+    fn neg(self) -> Self::Output {
+        self.scale(-1.)
     }
 }
 

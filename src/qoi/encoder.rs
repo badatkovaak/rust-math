@@ -21,20 +21,10 @@ pub struct QoiDesc {
     colorspace: u8,
 }
 
-// pub struct Image {
-//     data: Box<[Pixel]>,
-//     height: u64,
-//     width: u64,
-// }
-
 #[inline]
 pub fn qoi_hash(p: Pixel) -> u64 {
     (p.r as u64 * 3 + p.g as u64 * 5 + p.b as u64 * 7 + p.a as u64 * 11) % 64
 }
-
-// pub fn qoi_hash(p: Pixel) -> u64 {
-//     (p.0[0] as u64 * 3 + p.0[1] as u64 * 5 + p.0[2] as u64 * 7 + p.0[3] as u64 * 11) % 64
-// }
 
 // pub fn bytes_to_pixels(b: &[u8]) -> Vec<Pixel> {
 //     slice_to_chunks(b, 4)

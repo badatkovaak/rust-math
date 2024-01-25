@@ -3,7 +3,8 @@ use crate::utils;
 use std::ops;
 use std::slice;
 
-pub struct Vector(pub Vec<f64>);
+// pub struct Vector(pub Vec<f64>);
+pub struct Vector(pub Box<[f64]>);
 
 impl Iterator for Vector {
     type Item = f64;
@@ -21,7 +22,8 @@ impl Clone for Vector {
 
 impl FromIterator<f64> for Vector {
     fn from_iter<T: IntoIterator<Item = f64>>(iter: T) -> Self {
-        Self(Vec::from_iter(iter))
+        // Vector(Vec::from_iter(iter))
+        Vector(Vec::from_iter(iter).into_boxed_slice())
     }
 }
 
@@ -62,7 +64,7 @@ impl Vector {
         for item in self.iter() {
             result.push(item * &s);
         }
-        Vector(result)
+        Vector(result.into_boxed_slice())
     }
 
     pub fn get_length(self: &Self) -> f64 {

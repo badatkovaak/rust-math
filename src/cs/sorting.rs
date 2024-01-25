@@ -1,8 +1,8 @@
 use rand;
 
-pub fn fill_random_u64(v: &mut Vec<u64>) {
+pub fn fill_random_u64(v: &mut Vec<u64>, bound: u64) {
     for i in v.iter_mut() {
-        *i = (i64::abs(rand::random::<i64>()) as u64) % 10;
+        *i = (i64::abs(rand::random::<i64>()) as u64) % bound;
     }
 }
 
@@ -43,13 +43,11 @@ pub fn insertion_sort<T: Ord + Copy + std::fmt::Debug>(v: &Vec<T>) -> Vec<T> {
         }
 
         if boundary == 0 {
-            // println!("b = 0");
             let i = if v[boundary] >= v[index] { 0 } else { 1 };
             insert_at_index(v, index, i);
             return;
         }
 
-        // let mut temp: std::cmp::Ordering;
         let mut hi = boundary;
         let mut lo = 0;
         let mut i = (hi + lo) / 2;
@@ -57,7 +55,6 @@ pub fn insertion_sort<T: Ord + Copy + std::fmt::Debug>(v: &Vec<T>) -> Vec<T> {
         loop {
             match v[i].cmp(&v[index]) {
                 std::cmp::Ordering::Equal => {
-                    // println!("equals");
                     insert_at_index(v, index, i);
                     return;
                 }
@@ -76,8 +73,6 @@ pub fn insertion_sort<T: Ord + Copy + std::fmt::Debug>(v: &Vec<T>) -> Vec<T> {
                 } else {
                     i = lo + 1;
                 }
-                // println!("div 1");
-                // println!("{} {} {}", hi, lo, i);
                 insert_at_index(v, index, i);
                 return;
             }
@@ -87,9 +82,48 @@ pub fn insertion_sort<T: Ord + Copy + std::fmt::Debug>(v: &Vec<T>) -> Vec<T> {
 
     let mut res = v.to_vec();
     for i in 1..res.len() {
-        // println!("main iter");
         binary_insert(&mut res, i - 1, i);
-        // println!("{:?}\n", res);
     }
     res
 }
+
+pub fn merge_sort<T: Copy + Ord>(v: &Vec<T>) -> Vec<T> {
+    fn merge<T: Copy + Ord>(
+        temp: &mut Vec<T>,
+        v: &mut Vec<T>,
+        begin: usize,
+        mid: usize,
+        end: usize,
+    ) {
+        let mut i = begin;
+        let mut j = mid;
+        for k in begin..end {
+            if i < mid && (j >= end || v[i] <= v[j]) {
+                temp[k] = v[i];
+                i += 1;
+            } else {
+                temp[k] = v[j];
+                j += 1;
+            }
+        }
+    }
+
+    fn split_merge<T: Copy + Ord>(v: &mut Vec<T>, temp: &mut Vec<T>, begin: usize, end: usize) {
+        if end - begin <= 1 {
+            return;
+        }
+        let middle = begin + (end - begin) / 2;
+        split_merge(temp, v, begin, middle);
+        split_merge(temp, v, middle, end);
+        merge(temp, v, begin, middle, end);
+    }
+
+    let mut res = v.clone();
+    let mut temp = v.clone();
+    let n = res.len();
+
+    split_merge(&mut temp, &mut res, 0, n);
+    res
+}
+
+// pub fn quick_sort<T: Copy, Ord>(v: &Vec<T>) -> Vec<T> {}

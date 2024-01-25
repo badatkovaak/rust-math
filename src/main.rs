@@ -15,6 +15,7 @@ pub mod utils;
 use std::path::Path;
 use std::time::{self, Instant};
 
+use crate::cs::sorting;
 use linear_algebra::matrix::Matrix;
 
 use crate::constants::{E, LN2};
@@ -27,10 +28,10 @@ use crate::linear_algebra::matrix_v2::MatrixV2;
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
 // use crate::misc;
-use algebra::c_algebraic::Complex;
+use algebra::complex::Complex;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
-use algebra::poly_c::{gcd, PolyC};
+use algebra::poly_c::PolyC;
 use cs::life::{self, Game};
 
 fn test1(h: u64, w: u64, i: u64) -> (u64, u64) {
@@ -60,25 +61,25 @@ fn main() {
     //     m2.clone().inverse()
     // );
 
-    let (h, w) = (1024, 1024);
+    // let (h, w) = (1024, 1024);
     // let z = vec![17, 19, 34, 35, 50];
     // let z = vec![3, 35, 67];
-    let z = vec![
-        (4, 6),
-        (5, 6),
-        (6, 5),
-        (6, 7),
-        (7, 6),
-        (8, 6),
-        (9, 6),
-        (10, 6),
-        (11, 5),
-        (11, 7),
-        (12, 6),
-        (13, 6),
-    ];
-    let start = time::Instant::now();
-    let mut x = Game::new_from_coords(z, h, w).unwrap();
+    // let z = vec![
+    //     (4, 6),
+    //     (5, 6),
+    //     (6, 5),
+    //     (6, 7),
+    //     (7, 6),
+    //     (8, 6),
+    //     (9, 6),
+    //     (10, 6),
+    //     (11, 5),
+    //     (11, 7),
+    //     (12, 6),
+    //     (13, 6),
+    // ];
+    // let start = time::Instant::now();
+    // let mut x = Game::new_from_coords(z, h, w).unwrap();
     // println!("{}\n", x.clone());
     // let n = 300420392;
     // println!(
@@ -86,13 +87,13 @@ fn main() {
     //     life::to_binary_string(n),
     //     life::to_binary_string(set_bit(n, 20, false))
     // );
-    for i in 0..20 {
-        x.run();
-        // println!("\n{}", x.clone());
-    }
+    // for i in 0..20 {
+    // x.run();
+    // println!("\n{}", x.clone());
+    // }
 
-    let end = start.elapsed();
-    println!("Executed in  : {:?}", end);
+    // let end = start.elapsed();
+    // println!("Executed in  : {:?}", end);
     // let c1 = CAlgebraic(1., 1.);
     // let c2 = CAlgebraic(-1., 1.);
     //
@@ -193,10 +194,10 @@ fn main() {
     // let v1 = vec![1,2,3].pop()
     // let v1 = vec![9, 5, 2, 2, 6, 1, 1, 0, 2, 7];
     // let bs1 = BigString::construct(String::from("1234"));
-    // let mut v1: Vec<u64> = vec![0; 10];
-    // sorting::fill_random_u64(&mut v1);
-    // println!("{:?}", v1);
-    // println!("{:?}", sorting::bubble_sort(&v1));
+    let mut v1: Vec<u64> = vec![0; 15];
+    sorting::fill_random_u64(&mut v1, 10);
+    println!("{:?}", v1);
+    println!("{:?}", sorting::merge_sort(&v1));
     // println!(
     //     "{:?}",
     //     bs1 // String::from("1234")

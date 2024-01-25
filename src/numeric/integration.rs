@@ -1,6 +1,6 @@
 pub fn trapezoidal(a: f64, b: f64, f: &dyn Fn(f64) -> f64) -> f64 {
     let n = ((b - a).ceil() as u64) * 10000;
-    println!("{}", n);
+    // println!("{}", n);
     ((b - a) / (n as f64))
         * ((f(a) / 2.)
             + (1..(n - 1))
@@ -11,7 +11,7 @@ pub fn trapezoidal(a: f64, b: f64, f: &dyn Fn(f64) -> f64) -> f64 {
 
 pub fn simpsons_rule(a: f64, b: f64, f: &dyn Fn(f64) -> f64) -> f64 {
     let n = ((b - a).ceil() as u64) * 10000;
-    println!("{}", n);
+    // println!("{}", n);
     let h = (b - a) / (n as f64);
 
     h / 3.

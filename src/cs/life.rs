@@ -122,7 +122,6 @@ impl Game {
     }
 
     fn is_alive(&self, i: usize, j: usize) -> bool {
-        // return false;
         match (i, j) {
             (a, b) if i >= self.2 as usize || i == u64::MAX as usize => false,
             (a, b) if j >= self.1 as usize || j == u64::MAX as usize => false,

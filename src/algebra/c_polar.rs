@@ -1,7 +1,8 @@
 #[derive(Debug, Clone, Copy)]
 pub struct CPolar(pub f64, pub f64);
 
-use crate::{algebra::c_algebraic, constants::PI};
+use crate::algebra::complex::Complex;
+use crate::{algebra::complex, constants::PI};
 use std::ops;
 
 impl ops::Neg for CPolar {
@@ -29,9 +30,10 @@ impl ops::Div for CPolar {
 }
 
 impl CPolar {
-    fn polar_to_algebraic(z: CPolar) -> c_algebraic::Complex {
+    fn polar_to_algebraic(z: CPolar) -> Complex {
         let c = z.1.sin_cos();
-        c_algebraic::Complex(z.0 * c.1, z.0 * c.0)
+        // complex::
+        Complex(z.0 * c.1, z.0 * c.0)
     }
 
     fn n_th_roots(self, n: u64) -> Vec<CPolar> {

@@ -8,7 +8,6 @@ pub fn ln1p(x: f64) -> f64 {
     for i in 0..50 {
         res += ((-1. as f64).powi(i) * x.powi(i + 1)) / ((i + 1) as f64);
     }
-    //println!("{}", res);
     res
 }
 
@@ -46,9 +45,7 @@ pub fn exp(x: f64) -> f64 {
     let prec = 40;
     for i in 0..=prec {
         res += (x.powi(i)) / factorial_f64(i as u64);
-        // println!("{}", res);
     }
-    //println!("{}", res);
     res
 }
 
@@ -56,8 +53,6 @@ pub fn expm1(x: f64) -> f64 {
     let mut res = 0.0;
     for i in 1..=40 {
         res += (x.powi(i)) / factorial_f64(i as u64);
-        // println!("{}", res);
     }
-    //println!("{}", res);
     res
 }

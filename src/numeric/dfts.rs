@@ -27,7 +27,7 @@ pub fn fft_power2(coefs: Vec<CAlg>, is_inverse: bool) -> Option<Vec<CAlg>> {
         return None;
     }
 
-    println!("\n{:?}", coefs);
+    // println!("\n{:?}", coefs);
 
     let n = coefs.len();
 
@@ -44,24 +44,24 @@ pub fn fft_power2(coefs: Vec<CAlg>, is_inverse: bool) -> Option<Vec<CAlg>> {
 
     let omega: CAlg;
     let a = f64::sin_cos(2. * PI / (n as f64));
-    println!("{:?}", a);
+    // println!("{:?}", a);
     if !is_inverse {
         omega = CAlg(a.1, a.0);
     } else {
         omega = (-CAlg(a.1, a.0)).scale(1. / (n as f64));
     }
-    println!("{}", omega);
+    // println!("{}", omega);
 
     let y_e = fft_power2(p_e, is_inverse).unwrap();
     let y_o = fft_power2(p_o, is_inverse).unwrap();
     let mut res = vec![CAlg(0., 0.); n];
 
     for i in 0..n / 2 {
-        println!("{}, {}", i, omega.pow(i as i64));
+        // println!("{}, {}", i, omega.pow(i as i64));
         res[i] = y_e[i] + omega.pow(i as i64) * y_o[i];
         res[i + n / 2] = y_e[i] - omega.pow(i as i64) * y_o[i];
     }
 
-    println!("{:?}\n", res);
+    // println!("{:?}\n", res);
     Some(res)
 }

@@ -6,7 +6,7 @@ use crate::utils::{self, fequals, is_power_of_n};
 use std::iter::zip;
 use std::ops;
 
-use crate::algebra::c_algebraic::Complex;
+use crate::algebra::complex::Complex;
 use crate::utils::max_of_two;
 
 impl std::fmt::Display for PolyC {
@@ -85,10 +85,7 @@ impl ops::Div for PolyC {
     type Output = (PolyC, PolyC);
 
     fn div(self, rhs: Self) -> Self::Output {
-        // println!("{:?}\n{:?}", self, rhs);
-
         if self.len() < rhs.len() {
-            // println!("hi");
             return (PolyC(vec![Complex(0., 0.)]), self);
         }
 
@@ -103,7 +100,6 @@ impl ops::Div for PolyC {
         }
 
         let mut q = PolyC(vec![Complex(0., 0.); count]);
-        // let r = Polynomial(vec![]);
 
         let (c1, c2) = (p1.last().unwrap(), p2.last().unwrap());
 
@@ -117,11 +113,6 @@ impl ops::Div for PolyC {
 
         let r = PolyC(p1) - PolyC(p3);
         let (a, b) = r.clone().strip_zeros() / rhs.clone();
-        // println!("self: {}\nrhs: {}", self, rhs);
-        // println!("q: {}\nr: {}", q, r);
-        // println!("a: {}\nb: {}", a, b);
-        // println!("c: {}", c);
-        // println!();
         ((q + a).prettify(), b.prettify())
     }
 }
@@ -190,53 +181,49 @@ impl PolyC {
     fn len(&self) -> usize {
         self.0.len()
     }
-}
 
-pub fn gcd(p1: PolyC, p2: PolyC) -> PolyC {
-    let mut a: PolyC;
-    let mut b: PolyC;
+    pub fn gcd(p1: PolyC, p2: PolyC) -> PolyC {
+        let mut a: PolyC;
+        let mut b: PolyC;
 
-    if p1.len() > p2.len() {
-        (a, b) = (p1, p2);
-    } else {
-        (a, b) = (p2, p1);
-    }
+        if p1.len() > p2.len() {
+            (a, b) = (p1, p2);
+        } else {
+            (a, b) = (p2, p1);
+        }
 
-    while a.len() > 1 && b.len() > 1 {
-        (a, b) = (b.clone(), (a / b).1);
-        // println!("a: {}, b: {}", a, b);
-    }
-    // println!("a: {}, b: {:?}", a, b);
+        while a.len() > 1 && b.len() > 1 {
+            (a, b) = (b.clone(), (a / b).1);
+        }
 
-    if a.len() == 1 && a.0[0] == Complex(0., 0.) {
-        return b;
-    } else if b.len() == 1 && b.0[0] == Complex(0., 0.) {
-        return a;
-    } else if a.len() == 1 {
-        return a;
-    } else if b.len() == 1 {
-        return b;
-    } else {
-        return PolyC(vec![Complex(0., 0.)]);
+        if a.len() == 1 && a.0[0] == Complex(0., 0.) {
+            return b;
+        } else if b.len() == 1 && b.0[0] == Complex(0., 0.) {
+            return a;
+        } else if a.len() == 1 {
+            return a;
+        } else if b.len() == 1 {
+            return b;
+        } else {
+            return PolyC(vec![Complex(0., 0.)]);
+        }
     }
 }
 
-pub fn mult_values(c1: Vec<Complex>, c2: Vec<Complex>) -> Option<Vec<Complex>> {
-    // println!("mult_values : \n{:?}\n{:?}\n", c1, c2);
-    if c1.len() != c2.len() {
-        return None;
-    }
-    let mut res = vec![Complex(1.0, 0.0); c1.len()];
-    for i in 0..c1.len() {
-        res[i] = c1[i] * c2[i];
-    }
-    // println!("{:?}", res);
-    Some(res)
-}
+// pub fn mult_values(c1: Vec<Complex>, c2: Vec<Complex>) -> Option<Vec<Complex>> {
+//     if c1.len() != c2.len() {
+//         return None;
+//     }
+//     let mut res = vec![Complex(1.0, 0.0); c1.len()];
+//     for i in 0..c1.len() {
+//         res[i] = c1[i] * c2[i];
+//     }
+//     Some(res)
+// }
 
-pub fn fuse_together(v1: &Vec<Complex>, v2: &Vec<Complex>) -> Vec<Complex> {
-    if v1.len() != v2.len() {
-        panic!();
-    }
-    zip(v1, v2).map(|(x, y)| x + y).collect::<Vec<Complex>>()
-}
+// pub fn fuse_together(v1: &Vec<Complex>, v2: &Vec<Complex>) -> Vec<Complex> {
+//     if v1.len() != v2.len() {
+//         panic!();
+//     }
+//     zip(v1, v2).map(|(x, y)| x + y).collect::<Vec<Complex>>()
+// }
