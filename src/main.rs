@@ -5,6 +5,7 @@
 pub mod algebra;
 pub mod constants;
 pub mod cs;
+pub mod exprlang;
 pub mod geometry;
 pub mod linear_algebra;
 pub mod long;
@@ -16,17 +17,15 @@ use std::path::Path;
 use std::time::{self, Instant};
 
 use crate::cs::sorting;
+use crate::exprlang::lexer::lex;
 use linear_algebra::matrix::Matrix;
 
 use crate::constants::{E, LN2};
 use crate::cs::life::set_bit;
-use crate::numeric::general::*;
-// use crate::complex_nums;
-// use crate::compute;
-// use crate::long;
 use crate::linear_algebra::matrix_v2::MatrixV2;
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
+use crate::numeric::general::*;
 // use crate::misc;
 use algebra::complex::Complex;
 use constants::PI;
@@ -34,14 +33,12 @@ use constants::PI;
 use algebra::poly_c::PolyC;
 use cs::life::{self, Game};
 
-fn test1(h: u64, w: u64, i: u64) -> (u64, u64) {
-    let (ih, iw) = (i / w, i % w);
-    // let (ih, iw) = (i / (8 * w) * h / 8, (i % w) / 8);
-    return (ih, iw);
-}
-
 fn main() {
     println!();
+
+    let l = lex("10 + 3 - 27 * 2.5 / 0.6 - .7  * 1. < > <= >= = ( ) fn re x");
+    println!("{:?}", l.unwrap());
+
     // let vec1: Vec<f64> = vec![1., 2., 3.];
     // let vec2: Vec<f64> = vec![4., 5., 6.];
     // let vec12 = vector::add(&vec1, &vec2);
@@ -194,10 +191,10 @@ fn main() {
     // let v1 = vec![1,2,3].pop()
     // let v1 = vec![9, 5, 2, 2, 6, 1, 1, 0, 2, 7];
     // let bs1 = BigString::construct(String::from("1234"));
-    let mut v1: Vec<u64> = vec![0; 15];
-    sorting::fill_random_u64(&mut v1, 10);
-    println!("{:?}", v1);
-    println!("{:?}", sorting::merge_sort(&v1));
+    // let mut v1: Vec<u64> = vec![0; 15];
+    // sorting::fill_random_u64(&mut v1, 10);
+    // println!("{:?}", v1);
+    // println!("{:?}", sorting::merge_sort(&v1));
     // println!(
     //     "{:?}",
     //     bs1 // String::from("1234")
