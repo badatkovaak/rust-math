@@ -15,11 +15,12 @@ use ElementaryFunc as EF;
 
 #[derive(Debug, Clone)]
 pub enum Token {
-    Let,
-    Id(Rc<str>),
+    // Let,
+    // Id(Rc<str>),
     IntLiteral(u64),
     FloatLiteral(f64),
-    ElemFunc(EF),
+    // ElemFunc(EF),
+    Assign,
     Equal,
     LessThen,
     GreaterThen,
@@ -32,6 +33,7 @@ pub enum Token {
     Caret,
     LParen,
     RParen,
+    Semicolon,
 }
 
 #[derive(Debug)]
@@ -46,7 +48,7 @@ use LexerError as LE;
 use Token as T;
 
 pub fn lex(input: &str) -> Result<Vec<Token>, LexerError> {
-    let keywords: HashMap<&str, Token> = HashMap::from([("let", T::Let)]);
+    // let keywords: HashMap<&str, Token> = HashMap::from([("let", T::Let)]);
 
     let elem_func: HashMap<&str, EF> = HashMap::from([
         ("ln", EF::Ln),
@@ -178,37 +180,53 @@ pub fn lex(input: &str) -> Result<Vec<Token>, LexerError> {
             }
             '=' => {
                 chars.next();
-                toks.push(T::Equal);
-            }
-            ' ' => {
-                chars.next();
-            }
-            a if a.is_ascii_alphabetic() || a == '_' => {
-                let mut name = String::from(a);
-
-                chars.next();
-
-                while let Some(&d) = chars.peek() {
+                if let Some(&d) = chars.peek() {
                     match d {
-                        a if a.is_ascii_alphanumeric() || a == '_' => {
-                            name.push(a);
+                        '=' => {
+                            toks.push(T::Equal);
                             chars.next();
                         }
                         _ => {
-                            break;
+                            toks.push(T::Assign);
                         }
                     }
-                    if name.len() >= 65 {
-                        return Err(LE::LexErr);
-                    }
                 }
-                if let Some(x) = keywords.get(name.as_str()) {
-                    toks.push(x.clone());
-                } else if let Some(&y) = elem_func.get(name.as_str()) {
-                    toks.push(T::ElemFunc(y));
-                } else {
-                    toks.push(T::Id(Rc::from(name)));
-                }
+                // toks.push(T::Equal);
+            }
+            ';' => {
+                toks.push(T::Semicolon);
+                chars.next();
+            }
+            ' ' | '\t' | '\n' => {
+                chars.next();
+            }
+            a if a.is_ascii_alphabetic() || a == '_' => {
+                return Err(LE::LexErr);
+                // let mut name = String::from(a);
+
+                // chars.next();
+                //
+                // while let Some(&d) = chars.peek() {
+                //     match d {
+                //         a if a.is_ascii_alphanumeric() || a == '_' => {
+                //             name.push(a);
+                //             chars.next();
+                //         }
+                //         _ => {
+                //             break;
+                //         }
+                //     }
+                //     if name.len() >= 65 {
+                //         return Err(LE::LexErr);
+                //     }
+                // }
+                // if let Some(x) = keywords.get(name.as_str()) {
+                //     toks.push(x.clone());
+                // // } else if let Some(&y) = elem_func.get(name.as_str()) {
+                // //     toks.push(T::ElemFunc(y));
+                // } else {
+                //     toks.push(T::Id(Rc::from(name)));
+                // }
             }
             _ => {
                 return Err(LE::LexErr);

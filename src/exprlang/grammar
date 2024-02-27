@@ -1,0 +1,4 @@
+Value = digit + | digit * "." digit *
+BinaryOp = "+" | "-" | "*" | "/" | "^"
+Expr = "(" Expr ")" | Expr BinaryOp Expr | Value
+Program = (Expr "\n") +

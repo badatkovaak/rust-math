@@ -36,7 +36,7 @@ use cs::life::{self, Game};
 fn main() {
     println!();
 
-    let l = lex("10 + 3 - 27 * 2.5 / 0.6 - .7  * 1. < > <= >= = ( ) fn re x");
+    let l = lex("10 + 3 - 27 * 2.5 / 0.6 - .7  * - 1. < > <= >= == = ( )");
     println!("{:?}", l.unwrap());
 
     // let vec1: Vec<f64> = vec![1., 2., 3.];
