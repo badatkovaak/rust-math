@@ -9,6 +9,8 @@ use std::ops;
 use crate::algebra::complex::Complex;
 use crate::utils::max_of_two;
 
+use Complex as C;
+
 impl std::fmt::Display for PolyC {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.into_string())
@@ -19,7 +21,7 @@ impl ops::Neg for PolyC {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-        PolyC(self.0.iter().map(|x| -x).collect::<Vec<Complex>>())
+        PolyC(self.0.iter().map(|x| -x).collect::<Vec<C>>())
     }
 }
 
@@ -32,19 +34,19 @@ impl ops::Add for PolyC {
         }
 
         let mlen = max_of_two(self.len(), rhs.len());
-        let mut op1: Vec<Complex>;
-        let mut op2: Vec<Complex>;
+        let mut op1: Vec<C>;
+        let mut op2: Vec<C>;
 
         if self.len() < mlen {
             op1 = self.0.clone();
             while op1.len() < mlen {
-                op1.push(Complex(0., 0.));
+                op1.push(C(0., 0.));
             }
             op2 = rhs.0.clone();
         } else {
             op2 = rhs.0.clone();
             while op2.len() < mlen {
-                op2.push(Complex(0., 0.));
+                op2.push(C(0., 0.));
             }
             op1 = self.0.clone();
         }
@@ -72,7 +74,7 @@ impl ops::Mul for PolyC {
             }
         }
         while match res.last() {
-            Some(a) => *a == Complex(0., 0.),
+            Some(a) => *a == C(0., 0.),
             None => false,
         } {
             res.pop();
@@ -86,16 +88,16 @@ impl ops::Div for PolyC {
 
     fn div(self, rhs: Self) -> Self::Output {
         if self.len() < rhs.len() {
-            return (PolyC(vec![Complex(0., 0.)]), self);
+            return (PolyC(vec![C(0., 0.)]), self);
         }
 
         let p1 = self.0.clone();
         let mut p2 = rhs.0.clone();
-        let p3: Vec<Complex>;
+        let p3: Vec<C>;
         let mut count = 0;
 
         while p1.len() > p2.len() {
-            p2.insert(0, Complex(0., 0.));
+            p2.insert(0, C(0., 0.));
             count += 1;
         }
 
@@ -104,7 +106,7 @@ impl ops::Div for PolyC {
         let (c1, c2) = (p1.last().unwrap(), p2.last().unwrap());
 
         if c1 != c2 {
-            p3 = p2.iter().map(|x| x * c1 / (*c2)).collect::<Vec<Complex>>();
+            p3 = p2.iter().map(|x| x * c1 / (*c2)).collect::<Vec<C>>();
         } else {
             p3 = p2.clone();
         }
@@ -123,9 +125,9 @@ impl PolyC {
         for (i, v) in self.0.iter().enumerate().rev() {
             if self.len() == 1 {
                 res.extend(format!("({})", v).chars());
-            } else if i != 0 && *v != Complex(0., 0.) {
+            } else if i != 0 && *v != C(0., 0.) {
                 res.extend(format!("({})x^{} + ", v, i).chars());
-            } else if i == 0 && *v != Complex(0., 0.) {
+            } else if i == 0 && *v != C(0., 0.) {
                 res.extend(format!("({})", v).chars());
             }
         }
@@ -140,7 +142,7 @@ impl PolyC {
         res
     }
 
-    fn eval(&self, point: Complex) -> Complex {
+    fn eval(&self, point: C) -> C {
         self.0
             .iter()
             .enumerate()
@@ -167,8 +169,8 @@ impl PolyC {
 
     fn normalize(mut self) -> Self {
         if let Some(&c) = self.0.last() {
-            if c != Complex(1., 0.) && c != Complex(0., 0.) && self.len() > 0 {
-                self.scale_by(Complex(1., 0.) / c);
+            if c != C(1., 0.) && c != C(0., 0.) && self.len() > 0 {
+                self.scale_by(C(1., 0.) / c);
             }
         }
         self
@@ -196,16 +198,16 @@ impl PolyC {
             (a, b) = (b.clone(), (a / b).1);
         }
 
-        if a.len() == 1 && a.0[0] == Complex(0., 0.) {
+        if a.len() == 1 && a.0[0] == C(0., 0.) {
             return b;
-        } else if b.len() == 1 && b.0[0] == Complex(0., 0.) {
+        } else if b.len() == 1 && b.0[0] == C(0., 0.) {
             return a;
         } else if a.len() == 1 {
             return a;
         } else if b.len() == 1 {
             return b;
         } else {
-            return PolyC(vec![Complex(0., 0.)]);
+            return PolyC(vec![C(0., 0.)]);
         }
     }
 }

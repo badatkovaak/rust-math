@@ -18,6 +18,7 @@ use std::time::{self, Instant};
 
 use crate::cs::sorting;
 use crate::exprlang::lexer::lex;
+use crate::exprlang::poly::{poly_to_polysym, run_through};
 use linear_algebra::matrix::Matrix;
 
 use crate::constants::{E, LN2};
@@ -26,18 +27,54 @@ use crate::linear_algebra::matrix_v2::MatrixV2;
 use crate::long::big_digit::BigDigit;
 use crate::long::big_uint::BigUInt;
 use crate::numeric::general::*;
+use exprlang::poly::{self, parse_poly, Parser};
 // use crate::misc;
 use algebra::complex::Complex;
 use constants::PI;
 // use crate::long::{big_int::BigInt, big_string::BigString};
 use algebra::poly_c::PolyC;
+use algebra::sym_poly as SP;
+use algebra::symbol::Symbol as S;
 use cs::life::{self, Game};
 
 fn main() {
     println!();
 
-    let l = lex("10 + 3 - 27 * 2.5 / 0.6 - .7  * - 1. < > <= >= == = ( )");
-    println!("{:?}", l.unwrap());
+    // let f = SP::PolySym(vec![S(vec![('B', 1.)], 0.), S(vec![('A', 1.)], 0.)]);
+    // let g = SP::PolySym(vec![S(vec![], 2.), S(vec![], 2.)]);
+    // let s1 = S(vec![('A', 1.)], 1.);
+    // let s2 = S(vec![('B', 1.)], 2.);
+    // println!("{}", s1 + s2);
+    // println!("{}\n{}\n{}", f.clone(), g.clone(), f * g);
+
+    let p1 = run_through("(5A)x^4 + ( 4 B )x^3 + (3C)x^2 + (2D)x + E").unwrap();
+    let p2 = run_through("(A)x^5 + (B)x^4 + (C)x^3 + (D)x^2 + (E)x + F").unwrap();
+    let p3 = run_through("x + 1").unwrap();
+    let p4 = run_through("x - 1").unwrap();
+    let p5 = run_through("(6)x").unwrap();
+    let p6 = run_through("H").unwrap();
+
+    let pt1 = (p1 * p3.clone() * p4.clone()).sym_prettify();
+    let pt2 = -p2 * p5;
+    let pt3 = (p6 * p3.pow(3) * p4.pow(3)).sym_prettify();
+    // println!("{}", p4.pow(3) - p3.pow(3));
+
+    println!("{}\n{}\n{}", pt1, pt2, pt3);
+    // let ans = p1 * p3.clone() * p4.clone() - p2 * p5 + p6 * p3.pow(3) * p4.pow(3);
+    println!("ans : {}", pt1 + pt2 + pt3);
+
+    // let l = poly::lex("(10 - a + 20)x^3 + (b - c)x^2 + 20");
+    // println!("{:?}", l);
+    // let mut par = Parser {
+    //     toks: l.unwrap(),
+    //     pos: 0,
+    // };
+    // let p = parse_poly(&mut par).unwrap();
+    // let pol = poly_to_polysym(p);
+    // println!("{}", pol);
+
+    // let l = lex("10 + 3 - 27 * 2.5 / 0.6 - .7  * - 1. < > <= >= == = ( )");
+    // println!("{:?}", l.unwrap());
 
     // let vec1: Vec<f64> = vec![1., 2., 3.];
     // let vec2: Vec<f64> = vec![4., 5., 6.];

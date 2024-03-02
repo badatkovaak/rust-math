@@ -4,3 +4,6 @@ pub mod equations;
 pub mod poly_c;
 pub mod poly_z;
 pub mod quaternion;
+pub mod sym_monom;
+pub mod sym_poly;
+pub mod symbol;
