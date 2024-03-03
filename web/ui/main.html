@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="ui/css/output.css" rel="stylesheet" />
+        <script src="/ui/htmx.min.js"></script>
+    </head>
+    <body>
+        <header
+            hx-target="this"
+            hx-swap="outerHTML"
+            hx-get="ui/header.html"
+            hx-trigger="load">
+            Header is Loading ...
+        </header>
+        <div class="text-red-500">Hello Website !</div>
+    </body>
+</html>

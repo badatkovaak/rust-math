@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .header-ref {
+        @apply text-teal-700 no-underline hover:text-teal-600;
+    }
+    .header-ref-div {
+        @apply m-2 p-2;
+    }
+}

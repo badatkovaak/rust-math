@@ -216,7 +216,6 @@ fn parse_sym_expr(parser: &mut Parser) -> Option<SymExpr> {
             println!("Path5");
             return None;
         };
-        // println!("tok : {:?}", d);
         match d {
             T::IntLiteral(f) => {
                 parser.next();
@@ -260,9 +259,7 @@ fn parse_sym_expr(parser: &mut Parser) -> Option<SymExpr> {
     let mut is_minus = false;
     let mut fac_accum = 0.;
     let mut ids: Vec<(char, f64)> = vec![];
-    // println!("Start");
     loop {
-        // println!("Loop : {:?} {}", ids, fac_accum);
         match parse_fact_or_fact_id(parser) {
             Some((Some(c), f)) => {
                 ids.push((

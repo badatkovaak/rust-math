@@ -1,4 +1,6 @@
-Polynomial :=  PolyPow (("+" | "-") PolyPow)*
+Polynomial := PolyFact (("+" | "-") PolyFact)
+PolyFact := PolySum | "(" PolySum ")" ("(" Poly Sum")")* 
+PolySum :=  PolyPow (("+" | "-") PolyPow)*
 PolyPow := ("(" SymExpr")" x "^" Int) | (Factor? Id "+") Factor
 SymExpr := (Factor? Id | Factor) (("+" | "-") (Factor? Id | Factor) )*
 Factor := Int | Float
