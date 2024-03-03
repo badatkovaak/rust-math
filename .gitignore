@@ -2,3 +2,6 @@
 /assets
 **/target
 **/assets
+
+**/node_modules
+!/web/assets
