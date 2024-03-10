@@ -141,6 +141,11 @@ pub fn gcd_euclid(x: u64, y: u64) -> u64 {
     }
 }
 
+pub fn lcm_euclid(x: u64, y: u64) -> u64 {
+    let gcd = gcd_euclid(x, y);
+    x * (y / gcd)
+}
+
 pub fn factorial(n: u64) -> u64 {
     let mut res = 1;
     for i in 2..n {
