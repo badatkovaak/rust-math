@@ -75,13 +75,27 @@ impl ops::Mul for Matrix {
     type Output = Option<Self>;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        if self.0[0].len() != rhs.0.len() {
+        let d = self.get_dims();
+        let r = rhs.get_dims();
+        if d.1 != r.0 {
             return None;
         }
-        let mut res = vec![vec![0.; self.0.len()]; rhs.0[0].len()];
-        for i in 0..self.0.len() {
-            for k in 0..rhs.0[0].len() {
-                for j in 0..rhs.0.len() {
+        // println!(
+        //     "dims : {} {} {} {} {} {} {} {}",
+        //     d.0,
+        //     d.1,
+        //     r.0,
+        //     r.1,
+        //     self.0.len(),
+        //     self.0[0].len(),
+        //     rhs.0.len(),
+        //     rhs.0[0][6],
+        // );
+        let mut res = vec![vec![0.; r.1]; d.0];
+        for i in 0..d.0 {
+            for k in 0..r.0 {
+                for j in 0..r.1 {
+                    // println!("i: {}, j: {}, k: {}", i, j, k);
                     res[i][j] += self.0[i][k] * rhs.0[k][j];
                 }
             }
@@ -131,7 +145,7 @@ impl Matrix {
         };
         let dims = self.get_dims();
         let elem_matrix: Matrix = Matrix(
-            vec![vec![0.; dims.1]; dims.0]
+            vec![vec![0.; dims.0]; dims.0]
                 .iter_mut()
                 .enumerate()
                 .map(|(k, z)| {
@@ -154,7 +168,7 @@ impl Matrix {
         };
         let dims = self.get_dims();
         let elem_matrix: Matrix = Matrix(
-            vec![vec![0.; dims.1]; dims.0]
+            vec![vec![0.; dims.0]; dims.0]
                 .iter_mut()
                 .enumerate()
                 .map(|(k, z)| {
@@ -176,7 +190,7 @@ impl Matrix {
         };
         let dims = self.get_dims();
         let elem_matrix: Matrix = Matrix(
-            vec![vec![0.; dims.1]; dims.0]
+            vec![vec![0.; dims.0]; dims.0]
                 .iter_mut()
                 .enumerate()
                 .map(|(k, z)| {
@@ -194,7 +208,7 @@ impl Matrix {
         self.iter()
             .map(|x| {
                 x.iter()
-                    .map(|y| (!fequals(*y, 0., 12) as u64) * 1)
+                    .map(|y| (!fequals(*y, 0., 14) as u64) * 1)
                     .sum::<u64>()
             })
             .sum::<u64>()
@@ -216,15 +230,17 @@ impl Matrix {
             }
         }
 
-        if !fequals(res.0[0][0], 1., 12) {
-            let v = res.0[0][0];
-            res = res.elem_tr_2(0, 1. / v);
-        }
+        // if !fequals(res.0[0][0], 1., 14) {
+        //     let v = res.0[0][0];
+        //     res = res.elem_tr_2(0, 1. / v);
+        // }
 
         for i in 1..res.0.len() {
             let v = res.0[i][0];
-            res = res.elem_tr_3(i as u64, 0, -v);
+            let c = res.0[0][0];
+            res = res.elem_tr_3(i as u64, 0, -v / c);
         }
+        println!("{}", res);
 
         res.stitch(&(&mut res.cut(1, 1)).to_row_echelon_form())
     }

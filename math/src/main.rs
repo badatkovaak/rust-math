@@ -47,21 +47,76 @@ fn main() {
     // println!("{}", s1 + s2);
     // println!("{}\n{}\n{}", f.clone(), g.clone(), f * g);
 
-    let p1 = run_through("(5A)x^4 + ( 4 B )x^3 + (3C)x^2 + (2D)x + E").unwrap();
-    let p2 = run_through("(A)x^5 + (B)x^4 + (C)x^3 + (D)x^2 + (E)x + F").unwrap();
-    let p3 = run_through("x + 1").unwrap();
-    let p4 = run_through("x - 1").unwrap();
-    let p5 = run_through("(6)x").unwrap();
-    let p6 = run_through("H").unwrap();
+    let p1 = run_through("(3A)x^2 + (2B)x + C").unwrap();
+    let p2 = run_through("(A)x^3 + (B)x^2 + (C)x + D").unwrap();
+    let p3 = run_through("(E)x^3 + (F)x^2 + (G)x + H").unwrap();
+    let p4 = run_through("x^2 + 4").unwrap();
+    let p5 = run_through("x^2 + (4)x + 5").unwrap();
+    let p6 = run_through("(2)x").unwrap();
+    let p7 = run_through("(2)x + 4").unwrap();
+    let p8 = run_through("x^5 + (-1)x^4 + (-26)x^2 + (-24)x - 25").unwrap();
 
-    let pt1 = (p1 * p3.clone() * p4.clone()).sym_prettify();
-    let pt2 = -p2 * p5;
-    let pt3 = (p6 * p3.pow(3) * p4.pow(3)).sym_prettify();
-    // println!("{}", p4.pow(3) - p3.pow(3));
+    let pt1 = p1.clone() * p4.clone() * p5.clone();
+    let pt2 = p2.clone() * (p6.clone() * p5.clone() + p7.clone() * p4.clone());
+    let pt3 = p3.clone() * p4.clone() * p5.clone();
+    let res = pt1.clone() - pt2.clone() + pt3.clone() - p8.clone();
 
-    println!("{}\n{}\n{}", pt1, pt2, pt3);
+    println!(
+        "\n{}\n\n{}\n\n{}\n\n{}\n",
+        pt1.clone(),
+        pt2.clone(),
+        pt3.clone(),
+        res
+    );
+    // println!("")
+    println!(
+        "\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{:?}\n",
+        p1,
+        p2,
+        p3,
+        p4,
+        p5,
+        p6,
+        p7,
+        p8,
+        res.eval(-1.)
+    );
+
+    #[rustfmt::skip]
+    let m1 = Matrix(vec![
+        vec![ 4., -2.,  0.,   0.,  1.,  0.,   1.],
+        vec![18., -4., -3.,   0.,  4.,  1.,  -1.],
+        vec![48.,  0., -8.,  -4.,  9.,  4.,   0.],
+        vec![80., 16., -9., -12., 16.,  9., -26.],
+        vec![ 0., 40.,  0., -18., 20., 16., -24.],
+        vec![ 0.,  0., 20., -16.,  0., 20., -25.],
+    ]);
+    #[rustfmt::skip]
+    let m2 = Matrix(vec![
+        vec![  10.,  20., -20.,   4.,  -75. / 4.],
+        vec![  80.,  90., -60.,  -4.,       -20.],
+        vec![  80., 240., -90., -24., -615. / 4.],
+        vec![-400., 400., -80., -20.,      -120.],
+    ]);
+    #[rustfmt::skip]
+    let m3 = Matrix(vec![
+        vec![  10.,  170., -92.,126.25],
+        vec![  80.,  100., -36.,  130.],
+        vec![  1200., -880., 140., -870.],
+    ]);
+    println!("{}", m2);
+    println!("{}", m3);
+    println!("{}", m1.to_row_echelon_form());
+    // println!("{}", m2.to_row_echelon_form());
+    // println!("{}", m3.to_row_echelon_form());
+
+    // let pt1 = (p1.clone() * p3.clone() * p4.clone()).sym_pretti();
+    // let pt2 = -p2.clone() * p5;
+    // let pt3 = (p6 * p3.pow(3) * res  println!("{}", p2.eval(2.));
+
+    // println!("{}\n{}\n{}", pt1, pt2, pt3);
     // let ans = p1 * p3.clone() * p4.clone() - p2 * p5 + p6 * p3.pow(3) * p4.pow(3);
-    println!("ans : {}", pt1 + pt2 + pt3);
+    // println!("ans : {}", pt1 + pt2 + pt3);
 
     // let l = poly::lex("(10 - a + 20)x^3 + (b - c)x^2 + 20");
     // println!("{:?}", l);

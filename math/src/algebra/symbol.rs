@@ -97,7 +97,7 @@ impl Symbol {
                     .iter()
                     .map(|(c, v)| (*c, s * v))
                     .collect::<Vec<(char, f64)>>(),
-                self.1,
+                self.1 * s,
             ),
         }
     }

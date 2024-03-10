@@ -141,6 +141,15 @@ impl PolySym {
         res
     }
 
+    pub fn eval(&self, val: f64) -> Self {
+        let mut res = PolySym(vec![S(vec![], 1.)]);
+        for (i, v) in self.0.iter().enumerate() {
+            println!("{:?}", v);
+            res.0[0] += v.clone() * S(vec![], val.powi(i as i32));
+        }
+        return res.sym_prettify();
+    }
+
     pub fn sym_prettify(&self) -> Self {
         PolySym(
             self.0
