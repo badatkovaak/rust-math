@@ -245,6 +245,20 @@ impl Matrix {
         res.stitch(&(&mut res.cut(1, 1)).to_row_echelon_form())
     }
 
+    pub fn to_id(&self) -> Matrix {
+        let mut r = self.to_row_echelon_form();
+        for i in (0..self.0.len()).rev() {
+            for j in 0..i {
+                println!(
+                    "\nto_id\n{}\n {} {} {:?} {:?}\n",
+                    r, i, j, self.0[j][i], self.0[i][i]
+                );
+                r = r.elem_tr_3(j as u64, i as u64, -self.0[j][i] / self.0[i][i]);
+            }
+        }
+        r
+    }
+
     pub fn inverse(&mut self) -> Matrix {
         #[derive(Debug)]
         enum Trnsfrm {

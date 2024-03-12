@@ -85,15 +85,15 @@ fn main() {
     //     res.eval(-1.)
     // );
 
-    // #[rustfmt::skip]
-    // let m1 = Matrix(vec![
-    //     vec![ 4., -2.,  0.,   0.,  1.,  0.,   1.],
-    //     vec![18., -4., -3.,   0.,  4.,  1.,  -1.],
-    //     vec![48.,  0., -8.,  -4.,  9.,  4.,   0.],
-    //     vec![80., 16., -9., -12., 16.,  9., -26.],
-    //     vec![ 0., 40.,  0., -18., 20., 16., -24.],
-    //     vec![ 0.,  0., 20., -16.,  0., 20., -25.],
-    // ]);
+    #[rustfmt::skip]
+    let m1 = Matrix(vec![
+        vec![ 4., -2.,  0.,   0.,  1.,  0.,   1.],
+        vec![18., -4., -3.,   0.,  4.,  1.,  -1.],
+        vec![48.,  0., -8.,  -4.,  9.,  4.,   0.],
+        vec![80., 16., -9., -12., 16.,  9., -26.],
+        vec![ 0., 40.,  0., -18., 20., 16., -24.],
+        vec![ 0.,  0., 20., -16.,  0., 20., -25.],
+    ]);
     // #[rustfmt::skip]
     // let m2 = Matrix(vec![
     //     vec![  10.,  20., -20.,   4.,  -75. / 4.],
@@ -107,9 +107,10 @@ fn main() {
     //     vec![  80.,  100., -36.,  130.],
     //     vec![  1200., -880., 140., -870.],
     // ]);
-    // println!("{}", m2);
+    // println!("{}", m1);
     // println!("{}", m3);
     // println!("{}", m1.to_row_echelon_form());
+    // println!("{}", m1.to_id());
     // println!("{}", m2.to_row_echelon_form());
     // println!("{}", m3.to_row_echelon_form());
 
@@ -122,11 +123,11 @@ fn main() {
          R(0,1), R(40,1),  R(0,1), R(-18,1), R(20,1), R(16,1), R(-24,1),
          R(0,1),  R(0,1), R(20,1), R(-16,1),  R(0,1), R(20,1), R(-25,1),
     ]), dims: (6,7)};
-    println!("{}\n", m1);
-    println!("{}", m1.to_row_echelon_form());
+    // println!("{}\n", m1);
+    // println!("{}", m1.to_row_echelon_form());
 
-    let a = 10;
-    let b = 0;
+    // let a = 10;
+    // let b = 0;
     // println!("{} {}", lcm_euclid(a, b), gcd_euclid(a, b));
     // let pt1 = (p1.clone() * p3.clone() * p4.clone()).sym_pretti();
     // let pt2 = -p2.clone() * p5;
