@@ -55,7 +55,6 @@ impl ops::Add for RatMatrix {
             return None;
         }
         Some(RatMatrix {
-            // m: zip(self.m, rhs.m).map(|(x, y)| x + y).collect::<Vec<f64>>(),
             m: zip(self.m.iter(), rhs.m.iter())
                 .map(|(x, y)| *x + *y)
                 .collect::<Rc<[R]>>(),
@@ -147,6 +146,7 @@ impl ops::Mul for &RatMatrix {
         for i in 0..self.dims.0 {
             for k in 0..rhs.dims.0 {
                 for j in 0..rhs.dims.1 {
+                    println!("i {} j {} k {}", i, j, k);
                     res[i * rhs.dims.1 + j] +=
                         self.m[i * self.dims.1 + k] * rhs.m[k * rhs.dims.1 + j];
                 }
@@ -278,13 +278,14 @@ impl RatMatrix {
         //     res = res.elem_tr_2(0, 1. / v);
         // }
 
-        for i in 1..res.m.len() {
-            let v = res.m[i * res.dims.0];
+        for i in 1..res.dims.0 {
+            let v = res.m[i * res.dims.1];
             let c = res.m[0];
             // println!("Scale : {} {} {}", v, c, -v / c);
             if -v / c != R(0, 0) {
                 res = res.elem_row_tr_3(i as usize, 0, -v / c);
             }
+            println!("{}", res);
         }
         println!("{}", res);
 
@@ -297,11 +298,16 @@ impl RatMatrix {
 
     pub fn cut(&self, rows: u32, columns: u32) -> RatMatrix {
         let mut res = vec![R(0, 1); self.dims.0 * self.dims.1];
-        for i in 0..self.dims.0 {
-            for j in 0..self.dims.1 - 1 {
-                res[i * self.dims.1 + j] = self.m[(i + 1) * self.dims.1 + j + 1];
+        for i in 0..(self.dims.0 - rows as usize) {
+            for j in 0..(self.dims.1 - columns as usize) {
+                println!("cut : {} {}", i, j);
+                res[i * self.dims.1 + j] = self.m[i * self.dims.1 + j + 1];
             }
+            res[(i + 1) * self.dims.1 - 1] = R(0, 1);
         }
+        // for i in 0..
+        // for i in
+        println!("cut : \n{:?}\n", res);
         RatMatrix {
             m: Into::into(res),
             dims: self.dims,

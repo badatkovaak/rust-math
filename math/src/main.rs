@@ -19,6 +19,7 @@ use std::time::{self, Instant};
 use crate::cs::sorting;
 use crate::exprlang::lexer::lex;
 use crate::exprlang::poly::{poly_to_polysym, run_through};
+use crate::utils::{gcd_euclid, lcm_euclid};
 use linear_algebra::matrix::Matrix;
 use linear_algebra::rat_matrix::RatMatrix;
 
@@ -124,6 +125,9 @@ fn main() {
     println!("{}\n", m1);
     println!("{}", m1.to_row_echelon_form());
 
+    let a = 10;
+    let b = 0;
+    // println!("{} {}", lcm_euclid(a, b), gcd_euclid(a, b));
     // let pt1 = (p1.clone() * p3.clone() * p4.clone()).sym_pretti();
     // let pt2 = -p2.clone() * p5;
     // let pt3 = (p6 * p3.pow(3) * res  println!("{}", p2.eval(2.));
