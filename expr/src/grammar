@@ -1,0 +1,6 @@
+Expr1 := Expr2 (('+' | '-') Expr1)?
+Expr2 := Expr3 (('*' | '\') Expr2)?
+Expr3 := Term1 ('^' Expr3)?
+Term1 := '(' Expr1 ')' | Term2
+Term2 := Literal | Symbol | Literal Symbol
+Literal := Int | Float
