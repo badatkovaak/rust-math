@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub enum Token {
     LParen,
     RParen,
@@ -7,14 +7,20 @@ pub enum Token {
     Mult,
     Div,
     Caret,
-    // Assign,
+    Assign,
+    Comma,
+    // NewLine,
+    Let,
+    Semicolon,
     // Function,
     Symbol(char),
-    // Id(Rc<str>),
+    Id(Rc<str>),
     IntLiteral(i64),
     FloatLiteral(f64),
 }
-use std::{char, rc::Rc};
+use std::char;
+use std::collections::HashMap;
+use std::rc::Rc;
 
 use Token as T;
 
@@ -27,6 +33,7 @@ use LexerError as LE;
 pub fn lex(input: &str) -> Result<Vec<Token>, LexerError> {
     let mut toks = vec![];
     let mut chars = input.chars().peekable();
+    let keywords = HashMap::from([("let", T::Let)]);
 
     'outer: while let Some(&c) = chars.peek() {
         match c {
@@ -121,14 +128,52 @@ pub fn lex(input: &str) -> Result<Vec<Token>, LexerError> {
                 toks.push(T::RParen);
                 chars.next();
             }
-
+            '=' => {
+                toks.push(T::Assign);
+                chars.next();
+            }
+            ',' => {
+                toks.push(T::Comma);
+                chars.next();
+            }
+            ';' => {
+                toks.push(T::Semicolon);
+                chars.next();
+            }
             ' ' | '\t' | '\n' => {
                 chars.next();
             }
             a if a.is_ascii_alphabetic() => {
-                toks.push(T::Symbol(c));
+                let mut name = String::from(a);
+
                 chars.next();
+
+                while let Some(&d) = chars.peek() {
+                    match d {
+                        a if a.is_ascii_alphabetic() => {
+                            name.push(a);
+                            chars.next();
+                        }
+                        _ => {
+                            break;
+                        }
+                    }
+                    if name.len() >= 65 {
+                        return Err(LE::Err);
+                    }
+                }
+                if let Some(x) = keywords.get(name.as_str()) {
+                    toks.push(x.clone());
+                } else {
+                    for i in name.chars() {
+                        toks.push(T::Symbol(i));
+                    }
+                }
             }
+            // a if a.is_ascii_alphabetic() => {
+            //     toks.push(T::Symbol(c));
+            //     chars.next();
+            // }
             _ => {
                 return Err(LE::Err);
             }

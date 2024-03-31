@@ -1,6 +1,9 @@
-Expr1 := Expr2 (('+' | '-') Expr1)?
-Expr2 := Expr3 (('*' | '\') Expr2)?
-Expr3 := Term1 ('^' Expr3)?
+PrExpr := Expr ';'
+Expr := (FuncExpr | ArExpr1)
+FuncExpr := Let Id '(' (Id (',' Id)*)? ')'  '=' Expr
+ArExpr1 := ArExpr2 (('+' | '-') ArExpr1)?
+ArExpr2 := ArExpr3 (('*' | '\') ArExpr2)?
+ArExpr3 := Term1 ('^' ArExpr3)?
 Term1 := '(' Expr1 ')' | Term2
-Term2 := Literal | Symbol | Literal Symbol
+Term2 := Literal | Symbol | Literal Symbol | Func
 Literal := Int | Float
