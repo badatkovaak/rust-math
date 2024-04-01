@@ -1,4 +1,4 @@
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Token {
     LParen,
     RParen,
@@ -14,7 +14,7 @@ pub enum Token {
     Semicolon,
     // Function,
     Symbol(char),
-    Id(Rc<str>),
+    // Id(Rc<str>),
     IntLiteral(i64),
     FloatLiteral(f64),
 }
