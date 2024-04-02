@@ -18,6 +18,16 @@ pub enum Token {
     IntLiteral(i64),
     FloatLiteral(f64),
 }
+
+pub fn equal_kind(t1: T, t2: T) -> bool {
+    match (t1, t2) {
+        (T::IntLiteral(_), T::IntLiteral(_)) => true,
+        (T::FloatLiteral(_), T::FloatLiteral(_)) => true,
+        (T::Symbol(_), T::Symbol(_)) => true,
+        (a, b) => a == b,
+    }
+}
+
 use std::char;
 use std::collections::HashMap;
 use std::rc::Rc;
