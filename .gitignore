@@ -1,7 +1,5 @@
-/target
-/assets
-**/target
-**/assets
+**/target/
+**/assets/
 
-**/node_modules
-!/web/assets
+**/node_modules/
+!/web/assets/
