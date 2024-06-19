@@ -1,23 +1,53 @@
 #![allow(dead_code)]
 // pub mod interpreter;
-pub mod lexer;
-pub mod lexer1;
-pub mod parser;
+// pub mod grammar;
+// pub mod lcombine;
+// pub mod lexer;
+// pub mod lexer1;
+// pub mod lnom;
+// pub mod parser;
 
-use lexer::lex;
-// use lexer1::lex;
+use std::io::{self, BufRead, Write};
+
+use lrlex::{lrlex_mod, DefaultLexeme};
+use lrpar::{lrpar_mod, Node};
+
+lrlex_mod!("grammar.l");
+lrpar_mod!("grammar.y");
+
+fn pretty_print(n: &Node<DefaultLexeme, u32>) {
+    match n {
+        Node::Term { lexeme: t } => println!("{:?}", t),
+        Node::Nonterm { ridx: _r, nodes } => {
+            for node in nodes {
+                pretty_print(node);
+            }
+        }
+    }
+}
 
 fn main() {
-    println!();
-    // let toks1 = lex("-. + 3 - 10^3/2");
-    // println!("{:?}", toks1);
-
-    // let toks = tokenize("10 + 3 - 27 * 2.5 / .6 : < > <= >= == != = , . ( ) [ ] && || |> >> mynaem fn for if do let x 'mystr' ");
-
-    let toks = lex(
-        "10 + 3 - 27 * 2.5 / 0.6 - .7  * 1. : < > <= >= == != = , . ( ) [ ] && || |> >> fn re x =>",
-        4,
-    );
-    println!("{:?}", toks);
-    println!();
+    let lexerdef = grammar_l::lexerdef();
+    let stdin = io::stdin();
+    loop {
+        print!(">>> ");
+        io::stdout().flush().ok();
+        match stdin.lock().lines().next() {
+            Some(Ok(ref l)) => {
+                if l.trim().is_empty() {
+                    continue;
+                }
+                let lexer = lexerdef.lexer(l);
+                let (res, errs) = grammar_y::parse(&lexer);
+                for e in errs {
+                    println!("{}", e.pp(&lexer, &grammar_y::token_epp));
+                }
+                match res {
+                    Some(r) => pretty_print(&r),
+                    _ => eprintln!("Unable to evaluate expression."),
+                }
+            }
+            _ => break,
+        }
+    }
 }

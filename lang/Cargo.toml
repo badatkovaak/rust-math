@@ -7,6 +7,21 @@ edition = "2021"
 
 # The generated code depends on lalrpop-util.
 [dependencies]
+combine = "4.6.7"
+nom = "7.1.3"
+lalrpop-util = { version = "0.20.2", features = ["lexer", "unicode"] }
+lrpar = "0.13.6"
+cfgrammar = "0.13.6"
+lrlex = "0.13.6"
+
+[build-dependencies] # <-- We added this and everything after!
+lalrpop = "0.20.2"
+lrpar = "0.13.6"
+cfgrammar = "0.13.6"
+lrlex = "0.13.6"
+
+
+
 # lalrpop-util = "*"
 #
 # # Add a build-time dependency on the lalrpop library:

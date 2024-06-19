@@ -62,16 +62,48 @@ pub fn decode_byte(b: u8) -> Option<QoiOp> {
 }
 
 pub fn encode(image: &[Pixel4], desc: &QoiDesc) -> Result<Box<[u8]>, ()> {
-    let buffer = vec![0; 64].into_boxed_slice();
-    let curr = Pixel4 {
+    let mut buffer = vec![
+        Pixel4 {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0
+        };
+        64
+    ]
+    .into_boxed_slice();
+    let mut curr = Pixel4 {
         r: 0,
         g: 0,
         b: 0,
         a: 255,
     };
-    let prev: Pixel4;
-    let prev1: Pixel4;
-    let curr1: Pixel4;
+    let mut prev: Pixel4;
+    let mut prev1: Pixel4;
+    let mut curr1: Pixel4;
+
+    let curr_index: usize = 0;
+    let img_size = desc.width * desc.height;
+
+    // let mut output = 0;
+
+    while (curr_index as u32) < img_size {
+        prev = curr;
+        curr = image[curr_index as usize];
+        if curr_index > 0 {
+            buffer[hash(prev)] = prev;
+        }
+
+        if curr == prev {
+            let mut run_len = 1;
+            prev1 = curr;
+
+            if (curr_index as u32 + 1) < img_size {
+                curr1 = image[curr_index + run_len];
+            } else {
+            }
+        }
+    }
 
     Err(())
 }
