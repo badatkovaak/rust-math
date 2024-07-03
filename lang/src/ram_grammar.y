@@ -11,8 +11,11 @@ instruction
     ;
 
 argument_list
-    : "INT"
-    | "INT" "COMMA" argument_list
+    : argument
+    | argument_list "COMMA" argument
     ;
+
+argument
+    : "INT"
 
 %%

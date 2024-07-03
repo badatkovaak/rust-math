@@ -7,10 +7,10 @@ fn main() {
             ctp.yacckind(YaccKind::Original(
                 cfgrammar::yacc::YaccOriginalActionKind::GenericParseTree,
             ))
-            .grammar_in_src_dir("grammar.y")
+            .grammar_in_src_dir("ram_grammar.y")
             .unwrap()
         })
-        .lexer_in_src_dir("grammar.l")
+        .lexer_in_src_dir("ram_grammar.l")
         .unwrap()
         .build()
         .unwrap();

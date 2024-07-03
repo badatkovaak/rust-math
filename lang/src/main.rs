@@ -12,8 +12,11 @@ use std::io::{self, BufRead, Write};
 use lrlex::{lrlex_mod, DefaultLexeme};
 use lrpar::{lrpar_mod, Node};
 
-lrlex_mod!("grammar.l");
-lrpar_mod!("grammar.y");
+// lrlex_mod!("grammar.l");
+// lrpar_mod!("grammar.y");
+
+lrlex_mod!("ram_grammar.l");
+lrpar_mod!("ram_grammar.y");
 
 fn pretty_print(n: &Node<DefaultLexeme, u32>) {
     match n {
@@ -27,7 +30,8 @@ fn pretty_print(n: &Node<DefaultLexeme, u32>) {
 }
 
 fn main() {
-    let lexerdef = grammar_l::lexerdef();
+    // let lexerdef = grammar_l::lexerdef();
+    let lexerdef = ram_grammar_l::lexerdef();
     let stdin = io::stdin();
     loop {
         print!(">>> ");
@@ -38,9 +42,11 @@ fn main() {
                     continue;
                 }
                 let lexer = lexerdef.lexer(l);
-                let (res, errs) = grammar_y::parse(&lexer);
+                // let (res, errs) = grammar_y::parse(&lexer);
+                let (res, errs) = ram_grammar_y::parse(&lexer);
                 for e in errs {
-                    println!("{}", e.pp(&lexer, &grammar_y::token_epp));
+                    // println!("{}", e.pp(&lexer, &grammar_y::token_epp));
+                    println!("{}", e.pp(&lexer, &ram_grammar_y::token_epp));
                 }
                 match res {
                     Some(r) => pretty_print(&r),
